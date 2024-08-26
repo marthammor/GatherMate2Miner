@@ -165,6 +165,21 @@ WOWHEAD_ZONE_SUPPRESSION = [
     '7877',
     # Battle for Azeroth
     '8956', '9562',
+    # Dragonflight
+
+    # The War Within
+    '14999', # Earthcrawl Mines(Delve)
+    '15002', # The Waterworks (Delve)
+    '15000', # Kriegval's Rest (Delve)
+    '14998', # Mycomancer Cavern (Delve)
+    '15175', # The Sinkhole (Delve)
+    #'14753', # City of Threads
+    #'14771', # Dornogal (City)
+    '14957', # Fungal Folly (Delve)
+    '15003', # The Dread Pit (Delve)
+    '15008', # Tak-Rethan Abyss (Delve)
+    '15005', # Nightfall Sanctum (Delve)
+    '15004', # Skittering Breach (Delve)
 ]
 
 WOWHEAD_ZONE_MAP = {
@@ -329,6 +344,16 @@ WOWHEAD_ZONE_MAP = {
     '11400': Zone("The Maw", "1543"),
     '13570': Zone("Korthia", "1961"),
     '13536': Zone("Zereth Mortis", "1970"),
+
+    #Dragonflight
+
+    #The War Within
+    '14717': Zone("Isle of Dorn", "2248"),
+    '14838': Zone("Hallowfall", "2215"),
+    '14795': Zone("The Ringing Deeps", "2214"),
+    '14752': Zone("Azj-Kahet", "2255"),
+    '14753': Zone("City of Threads", "2213"),
+    '14771': Zone("Dornagal", "2339"),
 }
 
 HERBS = [
@@ -454,6 +479,54 @@ HERBS = [
     WowheadObject(name="Elusive First Flower", ids=['375337'], gathermate_id='1404'),
     WowheadObject(name="Lush Elusive First Flower", ids=['375340'], gathermate_id='1405'),
     WowheadObject(name="Lush Elusive Nightshade", ids=['375341'], gathermate_id='1406'),
+
+    #Dragonflight
+
+    # The War Within
+    WowheadObject(name="Mycobloom", ids=['454063', '414315', '454071', '454076'], gathermate_id='1439'),
+    WowheadObject(name="Lush Mycobloom", ids=['454062', '454075', '414320', '454070'], gathermate_id='1440'),
+    WowheadObject(name="Irradiated Mycobloom", ids=['414335', '454069', '454066', '454074'], gathermate_id='1441'),
+    WowheadObject(name="Sporefused Mycobloom", ids=['454072', '423367', '454064', '454067'], gathermate_id='1442'),
+    WowheadObject(name="Sporelusive Mycobloom", ids=['429647', '429642'], gathermate_id='1443'),
+    WowheadObject(name="Crystallized Mycobloom", ids=['414325'], gathermate_id='1444'),
+    WowheadObject(name="Altered Mycobloom", ids=['414330'], gathermate_id='1445'),
+    WowheadObject(name="Camouflaged Mycobloom", ids=['414340', '454073', '454065', '454068'], gathermate_id='1446'),
+
+    WowheadObject(name="Blessing Blossom", ids=['454086', '414318', '454081'], gathermate_id='1447'),
+    WowheadObject(name="Lush Blessing Blossom", ids=['414323', '454080', '454085'], gathermate_id='1448'),
+    WowheadObject(name="Irradiated Blessing Blossom", ids=['414338', '454079', '454084'], gathermate_id='1449'),
+    WowheadObject(name="Sporefused Blessing Blossom", ids=['454077', '454082'], gathermate_id='1450'),
+    WowheadObject(name="Sporelusive Blessing Blossom", ids=['429645', '429640'], gathermate_id='1451'),
+    WowheadObject(name="Crystallized Blessing Blossom", ids=['414328'], gathermate_id='1452'),
+    #WowheadObject(name="Altered Blessing Blossom", ids=[''], gathermate_id='1453'), # Doesn't exist or hasn't been seen/uploaded to Wowhead yet.
+    WowheadObject(name="Camouflaged Blessing Blossom", ids=['414343', '454083', '454078'], gathermate_id='1454'),
+
+    WowheadObject(name="Luredrop", ids=['454010', '454055', '414316'], gathermate_id='1455'),
+    WowheadObject(name="Lush Luredrop", ids=['414321', '454009', '454054'], gathermate_id='1456'),
+    WowheadObject(name="Irradiated Luredrop", ids=['414336', '454053'], gathermate_id='1457'),
+    WowheadObject(name="Sporefused Luredrop", ids=['454050', '423366', '454006'], gathermate_id='1458'),
+    WowheadObject(name="Sporelusive Luredrop", ids=['429641', '429646'], gathermate_id='1459'),
+    WowheadObject(name="Crystallized Luredrop", ids=['414326'], gathermate_id='1460'),
+    WowheadObject(name="Altered Luredrop", ids=['414331'], gathermate_id='1461'),
+    WowheadObject(name="Camouflaged Luredrop", ids=['414341', '454007', '454051'], gathermate_id='1462'),
+
+    WowheadObject(name="Orbinid", ids=['414317'], gathermate_id='1463'),
+    WowheadObject(name="Lush Orbinid", ids=['414322'], gathermate_id='1464'),
+    WowheadObject(name="Irradiated Orbinid", ids=['414337'], gathermate_id='1465'),
+    WowheadObject(name="Sporefused Orbinid", ids=['423368'], gathermate_id='1466'),
+    WowheadObject(name="Sporelusive Orbinid", ids=['429643', '429648'], gathermate_id='1467'),
+    WowheadObject(name="Crystallized Orbinid", ids=['414327'], gathermate_id='1468'),
+    WowheadObject(name="Altered Orbinid", ids=['414332'], gathermate_id='1469'),
+    WowheadObject(name="Camouflaged Orbinid", ids=['414342'], gathermate_id='1470'),
+
+    WowheadObject(name="Arathor's Spear", ids=['414319'], gathermate_id='1471'),
+    WowheadObject(name="Lush Arathor's Spear", ids=['414324'], gathermate_id='1472'),
+    WowheadObject(name="Irradiated Arathor's Spear", ids=['414339'], gathermate_id='1473'),
+    WowheadObject(name="Sporefused Arathor's Spear", ids=['423363'], gathermate_id='1474'),
+    WowheadObject(name="Sporelusive Arathor's Spear", ids=['429639', '429644'], gathermate_id='1475'),
+    WowheadObject(name="Crystallized Arathor's Spear", ids=['414329'], gathermate_id='1476'),
+    #WowheadObject(name="Altered Arathor's Spear", ids=[''], gathermate_id='1477'), # Doesn't exist or hasn't been seen/uploaded to Wowhead yet.
+    WowheadObject(name="Camouflaged Arathor's Spear", ids=['414344'], gathermate_id='1478'),
 ]
 
 ORES = [
@@ -565,6 +638,38 @@ ORES = [
     WowheadObject(name="Elusive Rich Progenium Deposit", ids=['375332'], gathermate_id='290'),
     # WowheadObject(name="Elusive Elethium Deposit", ids=[''], gathermate_id='291'),
     WowheadObject(name="Elusive Rich Elethium Deposit", ids=['375333'], gathermate_id='292'),
+
+    # Dragonflight
+
+    # The War Within
+    WowheadObject(name="Bismuth", ids=['413046'], gathermate_id='1218'),
+    WowheadObject(name="Rich Bismuth", ids=['413874'], gathermate_id='1219'),
+    WowheadObject(name="Camouflaged Bismuth", ids=['413889'], gathermate_id='1220'),
+    WowheadObject(name="Crystallized Bismuth", ids=['413883'], gathermate_id='1221'),
+    WowheadObject(name="Weeping Bismuth", ids=['413884'], gathermate_id='1222'),
+    #WowheadObject(name="Webbed Bismuth", ids=[''], gathermate_id='1223'),
+    WowheadObject(name="EZ-Mine Bismuth", ids=['413886'], gathermate_id='1224'),
+    WowheadObject(name="Bismuth Seam", ids=['413880'], gathermate_id='1225'),
+
+    WowheadObject(name="Aqirite", ids=['413047'], gathermate_id='1226'),
+    WowheadObject(name="Rich Aqirite", ids=['413875'], gathermate_id='1227'),
+    WowheadObject(name="Camouflaged Aqirite", ids=['413897'], gathermate_id='1228'),
+    WowheadObject(name="Crystallized Aqirite", ids=['413890'], gathermate_id='1229'),
+    WowheadObject(name="Weeping Aqirite", ids=['413892'], gathermate_id='1230'),
+    #WowheadObject(name="Webbed Aqirite", ids=[''], gathermate_id='1231'),
+    WowheadObject(name="EZ-Mine Aqirite", ids=['413895'], gathermate_id='1232'),
+    WowheadObject(name="Aqirite Seam", ids=['413881'], gathermate_id='1233'),
+
+    WowheadObject(name="Ironclaw", ids=['413049'], gathermate_id='1234'),
+    WowheadObject(name="Rich Ironclaw", ids=['413877'], gathermate_id='1235'),
+    WowheadObject(name="Camouflaged Ironclaw", ids=['413907'], gathermate_id='1236'),
+    WowheadObject(name="Crystallized Ironclaw", ids=['413900'], gathermate_id='1237'),
+    WowheadObject(name="Weeping Ironclaw", ids=['413902'], gathermate_id='1238'),
+    #WowheadObject(name="Webbed Ironclaw", ids=[''], gathermate_id='1239'),
+    WowheadObject(name="EZ-Mine Ironclaw", ids=['403905'], gathermate_id='1240'),
+    WowheadObject(name="Ironclaw Seam", ids=['413882'], gathermate_id='1241'),
+
+    WowheadObject(name="Webbed Ore Deposit", ids=['430335', '430351', '430352'], gathermate_id='1242'),
 ]
 
 TREASURES = [
@@ -702,6 +807,25 @@ FISHES = [
     WowheadObject(name="Elysian Thade School", ids=['349088'], gathermate_id='1105'),
     WowheadObject(name="Lost Sole School", ids=['349082'], gathermate_id='1106'),
     WowheadObject(name="Spinefin Piranha School", ids=['349087'], gathermate_id='1107'),
+
+    # Dragonflight
+
+    # The War Within
+    WowheadObject(name="Calm Surfacing Ripple", ids=['451670'], gathermate_id='1118'),
+    WowheadObject(name="River Bass Pool", ids=['451674'], gathermate_id='1119'),
+    WowheadObject(name="Glimmerpool", ids=['451669'], gathermate_id='1120'),
+    WowheadObject(name="Bloody Perch Swarm", ids=['451671'], gathermate_id='1121'),
+    WowheadObject(name="Swarm of Slum Sharks", ids=['451681'], gathermate_id='1122'),
+    WowheadObject(name="Blood in the Water", ids=['451678'], gathermate_id='1123'),
+    WowheadObject(name="Festering Rotpool", ids=['451677'], gathermate_id='1124'),
+    WowheadObject(name="Infused Ichor Spill", ids=['451679'], gathermate_id='1125'),
+    WowheadObject(name="Stargazer Swarm", ids=['451672'], gathermate_id='1126'),
+    WowheadObject(name="Anglerseeker Torrent", ids=['451675'], gathermate_id='1127'),
+    WowheadObject(name="Royal Ripple", ids=['451680'], gathermate_id='1128'),
+    WowheadObject(name="Shore Treasure", ids=['451673'], gathermate_id='1129'),
+    WowheadObject(name="Floating Deep Treasure", ids=['451676'], gathermate_id='1130'),
+    #WowheadObject(name="Shadowblind Grouper School", ids=['414622'], gathermate_id='1131'),
+    #WowheadObject(name="Whispers of the Deep", ids=['451682'], gathermate_id='1132'),
 ]
 
 if __name__ == '__main__':
