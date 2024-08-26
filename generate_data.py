@@ -150,7 +150,7 @@ with open('uimap.csv', newline='') as uimapcsv:
 # Dungeons and other odd maps
 WOWHEAD_ZONE_SUPPRESSION = [
     # Vanilla
-    '6511', '718', '457', '3455', '5339', '1581', '36', '796', '6040', '722', '719', '2100', '2557', '6510', '6514', '1584', '2717',
+    '6511', '718', '457', '3455', '5339', '1581', '36', '796', '6040', '722', '719', '2100', '2557', '6510', '6514', '1584', '2717', '3479',
     # Burning Crusade
     '3716', '3717', '3790', '3791',
     # Wrath of the Lich King
@@ -180,6 +180,7 @@ WOWHEAD_ZONE_SUPPRESSION = [
     '15008', # Tak-Rethan Abyss (Delve)
     '15005', # Nightfall Sanctum (Delve)
     '15004', # Skittering Breach (Delve)
+    '15009', # The Underkeep (Delve)
 ]
 
 WOWHEAD_ZONE_MAP = {
@@ -353,7 +354,7 @@ WOWHEAD_ZONE_MAP = {
     '14795': Zone("The Ringing Deeps", "2214"),
     '14752': Zone("Azj-Kahet", "2255"),
     '14753': Zone("City of Threads", "2213"),
-    '14771': Zone("Dornagal", "2339"),
+    '14771': Zone("Dornogal", "2339"),
 }
 
 HERBS = [
@@ -666,7 +667,7 @@ ORES = [
     WowheadObject(name="Crystallized Ironclaw", ids=['413900'], gathermate_id='1237'),
     WowheadObject(name="Weeping Ironclaw", ids=['413902'], gathermate_id='1238'),
     #WowheadObject(name="Webbed Ironclaw", ids=[''], gathermate_id='1239'),
-    WowheadObject(name="EZ-Mine Ironclaw", ids=['403905'], gathermate_id='1240'),
+    WowheadObject(name="EZ-Mine Ironclaw", ids=['413905'], gathermate_id='1240'),
     WowheadObject(name="Ironclaw Seam", ids=['413882'], gathermate_id='1241'),
 
     WowheadObject(name="Webbed Ore Deposit", ids=['430335', '430351', '430352'], gathermate_id='1242'),
