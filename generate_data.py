@@ -372,7 +372,7 @@ WOWHEAD_ZONE_MAP = {
     '14771': Zone("Dornogal", "2339"),
 }
 
-HERBS = [
+HERBS_VAN = [
     # Vanilla
     WowheadObject(name="Peacebloom", ids=['1618'], gathermate_id='401'),
     WowheadObject(name="Silverleaf", ids=['1617'], gathermate_id='402'),
@@ -405,7 +405,9 @@ HERBS = [
     WowheadObject(name="Icecap", ids=['176588'], gathermate_id='429'),
     # WowheadObject(name="Bloodvine", ids=[], gathermate_id='430'),
     WowheadObject(name="Black Lotus", ids=['176589'], gathermate_id='431'),
+]
 
+HERBS_BC = [
     # Burning Crusade
     WowheadObject(name="Felweed", ids=['181270'], gathermate_id='432'),
     WowheadObject(name="Dreaming Glory", ids=['181271'], gathermate_id='433'),
@@ -418,7 +420,9 @@ HERBS = [
     WowheadObject(name="Ragveil", ids=['181275'], gathermate_id='440'),
     WowheadObject(name="Flame Cap", ids=['181276'], gathermate_id='441'),
     WowheadObject(name="Netherdust Bush", ids=['185881'], gathermate_id='442'),
+]
 
+HERBS_WRATH = [
     # Wrath of the Lich King
     WowheadObject(name="Adder's Tongue", ids=['191019'], gathermate_id='443'),
     # WowheadObject(name="Constrictor Grass", ids=[], gathermate_id='444'),
@@ -431,7 +435,9 @@ HERBS = [
     WowheadObject(name="Firethorn", ids=['191303'], gathermate_id='451'),
     WowheadObject(name="Frozen Herb", ids=['190173', '190175'], gathermate_id='452'),
     WowheadObject(name="Frost Lotus", ids=['190176'], gathermate_id='453'),
+]
 
+HERBS_CATA = [
     # Cataclysm
     WowheadObject(name="Dragon's Teeth", ids=['2044'], gathermate_id='454'),
     WowheadObject(name="Sorrowmoss", ids=['176587'], gathermate_id='455'),
@@ -441,7 +447,9 @@ HERBS = [
     WowheadObject(name="Heartblossom", ids=['202750'], gathermate_id='459'),
     WowheadObject(name="Twilight Jasmine", ids=['202751'], gathermate_id='460'),
     WowheadObject(name="Whiptail", ids=['202752'], gathermate_id='461'),
+]
 
+HERBS_MOP = [
     # Mists of Pandaria
     WowheadObject(name="Golden Lotus", ids=['209354', '221545'], gathermate_id='462'),
     WowheadObject(name="Fool's Cap", ids=['209355', '221547'], gathermate_id='463'),
@@ -450,7 +458,9 @@ HERBS = [
     WowheadObject(name="Green Tea Leaf", ids=['209349', '221542'], gathermate_id='466'),
     WowheadObject(name="Rain Poppy", ids=['209353', '221543'], gathermate_id='467'),
     WowheadObject(name="Sha-Touched Herb", ids=['214510'], gathermate_id='468'),
+]
 
+HERBS_WOD = [
     # Draenor
     WowheadObject(name="Talador Orchid", ids=['228576', '237400'], gathermate_id='469'),
     WowheadObject(name="Nagrand Arrowbloom", ids=['228575', '237406'], gathermate_id='470'),
@@ -459,7 +469,9 @@ HERBS = [
     WowheadObject(name="Fireweed", ids=['228572', '237396'], gathermate_id='473'),
     WowheadObject(name="Frostweed", ids=['233117', '228571', '237398'], gathermate_id='474'),
     WowheadObject(name="Withered Herb", ids=['243334'], gathermate_id='475'),
+]
 
+HERBS_LEGION = [
     # Legion
     WowheadObject(name="Aethril", ids=['244774'], gathermate_id='476'),
     WowheadObject(name="Dreamleaf", ids=['244775'], gathermate_id='477'),
@@ -470,7 +482,9 @@ HERBS = [
     WowheadObject(name="Fel-Encrusted Herb", ids=['269278', '273052'], gathermate_id='482'),
     WowheadObject(name="Fel-Encrusted Herb Cluster", ids=['269887', '273053'], gathermate_id='483'),
     WowheadObject(name="Astral Glory", ids=['272782'], gathermate_id='484'),
+]
 
+HERBS_BFA = [
     # Battle for Azeroth
     WowheadObject(name="Akunda's Bite", ids=['276237'], gathermate_id='485'),
     WowheadObject(name="Anchor Weed", ids=['276242', '294125'], gathermate_id='486'),
@@ -480,7 +494,9 @@ HERBS = [
     WowheadObject(name="Star Moss", ids=['276236', '281868'], gathermate_id='490'),
     WowheadObject(name="Winter's Kiss", ids=['276238'], gathermate_id='491'),
     WowheadObject(name="Zin'anthid", ids=['326598'], gathermate_id='492'),
+]
 
+HERBS_SL = [
     # Shadowlands
     WowheadObject(name="Death Blossom", ids=['336686', '351469', '351470', '351471'], gathermate_id='493'),
     WowheadObject(name="Nightshade", ids=['336691', '356537'], gathermate_id='494'),
@@ -495,7 +511,9 @@ HERBS = [
     WowheadObject(name="Elusive First Flower", ids=['375337'], gathermate_id='1404'),
     WowheadObject(name="Lush Elusive First Flower", ids=['375340'], gathermate_id='1405'),
     WowheadObject(name="Lush Elusive Nightshade", ids=['375341'], gathermate_id='1406'),
+]
 
+HERBS_DF = [
     #Dragonflight
     WowheadObject(name="Hochenblume", ids=['381209', '407703', '398757'], gathermate_id='1407'),
     WowheadObject(name="Lush Hochenblume", ids=['381960', '407705', '398753'], gathermate_id='1408'),
@@ -534,7 +552,9 @@ HERBS = [
     WowheadObject(name="Lambent Writhebark", ids=['390141'], gathermate_id='1438'),
 
     #WowheadObject(name="Frozen Herb", ids=['382075'], gathermate_id=''),
+]
 
+HERBS_TWW = [
     # The War Within
     WowheadObject(name="Mycobloom", ids=['454063', '414315', '454071', '454076'], gathermate_id='1439'),
     WowheadObject(name="Lush Mycobloom", ids=['454062', '454075', '414320', '454070'], gathermate_id='1440'),
@@ -582,7 +602,7 @@ HERBS = [
     WowheadObject(name="Camouflaged Arathor's Spear", ids=['414344'], gathermate_id='1478'),
 ]
 
-ORES = [
+ORES_VAN = [
     # Vanilla
     WowheadObject(name="Copper Vein", ids=['1731', '181248'], gathermate_id='201'),
     WowheadObject(name="Tin Vein", ids=['1732', '181249'], gathermate_id='202'),
@@ -603,7 +623,9 @@ ORES = [
     WowheadObject(name="Lesser Bloodstone Deposit", ids=['2653'], gathermate_id='218'),
     WowheadObject(name="Incendicite Mineral Vein", ids=['1610'], gathermate_id='219'),
     WowheadObject(name="Indurium Mineral Vein", ids=['19903'], gathermate_id='220'),
+]
 
+ORES_BC = [
     # Burning Crusade
     WowheadObject(name="Fel Iron Deposit", ids=['181555'], gathermate_id='221'),
     WowheadObject(name="Adamantite Deposit", ids=['181556'], gathermate_id='222'),
@@ -612,14 +634,18 @@ ORES = [
     # WowheadObject(name="Large Obsidian Chunk", ids=[], gathermate_id='225'),
     # WowheadObject(name="Small Obsidian Chunk", ids=[], gathermate_id='226'),
     WowheadObject(name="Nethercite Deposit", ids=['185877'], gathermate_id='227'),
+]
 
+ORES_WRATH = [
     # Wrath of the Lich King
     WowheadObject(name="Cobalt Deposit", ids=['189978'], gathermate_id='228'),
     WowheadObject(name="Rich Cobalt Deposit", ids=['189979'], gathermate_id='229'),
     WowheadObject(name="Titanium Vein", ids=['191133'], gathermate_id='230'),
     WowheadObject(name="Saronite Deposit", ids=['189980'], gathermate_id='231'),
     WowheadObject(name="Rich Saronite Deposit", ids=['189981'], gathermate_id='232'),
+]
 
+ORES_CATA = [
     # Cataclysm
     WowheadObject(name="Obsidium Deposit", ids=['202736'], gathermate_id='233'),
     # WowheadObject(name="Huge Obsidian Slab", ids=[], gathermate_id='234'),
@@ -629,7 +655,9 @@ ORES = [
     WowheadObject(name="Pyrite Deposit", ids=['202737'], gathermate_id='238'),
     WowheadObject(name="Rich Obsidium Deposit", ids=['202739'], gathermate_id='239'),
     WowheadObject(name="Rich Pyrite Deposit", ids=['202740'], gathermate_id='240'),
+]
 
+ORES_MOP = [
     # Mists of Pandaria
     WowheadObject(name="Ghost Iron Deposit", ids=['209311', '221538'], gathermate_id='241'),
     WowheadObject(name="Rich Ghost Iron Deposit", ids=['209328', '221539'], gathermate_id='242'),
@@ -639,13 +667,17 @@ ORES = [
     WowheadObject(name="Rich Kyparite Deposit", ids=['209329'], gathermate_id='246'),
     WowheadObject(name="Trillium Vein", ids=['209313', '221541'], gathermate_id='247'),
     WowheadObject(name="Rich Trillium Vein", ids=['209330', '221540'], gathermate_id='248'),
+]
 
+ORES_WOD = [
     # Draenor
     WowheadObject(name="True Iron Deposit", ids=['228493', '243314', '237358'], gathermate_id='249'),
     WowheadObject(name="Rich True Iron Deposit", ids=['228510', '243315', '237357'], gathermate_id='250'),
     WowheadObject(name="Blackrock Deposit", ids=['228563', '243313', '237359'], gathermate_id='251'),
     WowheadObject(name="Rich Blackrock Deposit", ids=['228564', '237360', '243312'], gathermate_id='252'),
+]
 
+ORES_LEGION = [
     # Legion
     WowheadObject(name="Leystone Deposit", ids=['241726'], gathermate_id='253'),
     WowheadObject(name="Rich Leystone Deposit", ids=['245324'], gathermate_id='254'),
@@ -656,7 +688,9 @@ ORES = [
     WowheadObject(name="Empyrium Deposit", ids=['272768'], gathermate_id='259'),
     WowheadObject(name="Rich Empyrium Deposit", ids=['272778'], gathermate_id='260'),
     WowheadObject(name="Empyrium Seam", ids=['272780'], gathermate_id='261'),
+]
 
+ORES_BFA = [
     # Battle for Azeroth
     WowheadObject(name="Monelite Deposit", ids=['276616'], gathermate_id='262'),
     WowheadObject(name="Rich Monelite Deposit", ids=['276621'], gathermate_id='263'),
@@ -669,7 +703,9 @@ ORES = [
     WowheadObject(name="Osmenite Deposit", ids=['325875'], gathermate_id='270'),
     WowheadObject(name="Rich Osmenite Deposit", ids=['325873'], gathermate_id='271'),
     WowheadObject(name="Osmenite Seam", ids=['325874'], gathermate_id='272'),
+]
 
+ORES_SL = [
     # Shadowlands
     WowheadObject(name="Laestrite Deposit", ids=['349898'], gathermate_id='273'),
     WowheadObject(name="Rich Laestrite Deposit", ids=['349899'], gathermate_id='274'),
@@ -691,7 +727,9 @@ ORES = [
     WowheadObject(name="Elusive Rich Progenium Deposit", ids=['375332'], gathermate_id='290'),
     # WowheadObject(name="Elusive Elethium Deposit", ids=[''], gathermate_id='291'),
     WowheadObject(name="Elusive Rich Elethium Deposit", ids=['375333'], gathermate_id='292'),
+]
 
+ORES_DF = [
     # Dragonflight
     WowheadObject(name="Serevite Seam", ids=['381106'], gathermate_id='1200'),
     WowheadObject(name="Serevite Deposit", ids=['381102', '407677', '381103'], gathermate_id='1201'),
@@ -714,7 +752,9 @@ ORES = [
     WowheadObject(name="Metamorphic Draconium Deposit", ids=['390138'], gathermate_id='1217'),
 
     #WowheadObject(name="Metamorphic Spire", ids=['398747'], gathermate_id=''),
+]
 
+ORES_TWW = [
     # The War Within
     WowheadObject(name="Bismuth", ids=['413046'], gathermate_id='1218'),
     WowheadObject(name="Rich Bismuth", ids=['413874'], gathermate_id='1219'),
@@ -768,7 +808,7 @@ TREASURES = [
     #WowheadObject(name="Scarlet Footlocker", ids=['179498'], gathermate_id='519'),
 ]
 
-FISHES = [
+FISHES_VAN = [
     # Vanilla
     WowheadObject(name="Floating Wreckage", ids=['180751'], gathermate_id='101'),
     # WowheadObject(name="Patch of Elemental Water", ids=[], gathermate_id='102'),
@@ -781,7 +821,9 @@ FISHES = [
     WowheadObject(name="School of Deviate Fish", ids=['180658'], gathermate_id='109'),
     WowheadObject(name="Stonescale Eel Swarm", ids=['180712'], gathermate_id='110'),
     # WowheadObject(name="Muddy Churning Water", ids=[], gathermate_id='111'),
+]
 
+FISHES_BC = [
     # Burning Crusade
     WowheadObject(name="Highland Mixed School", ids=['182957'], gathermate_id='112'),
     WowheadObject(name="Pure Water", ids=['182951'], gathermate_id='113'),
@@ -792,7 +834,9 @@ FISHES = [
     WowheadObject(name="Sporefish School", ids=['182953'], gathermate_id='118'),
     WowheadObject(name="Steam Pump Flotsam", ids=['182952'], gathermate_id='119'),
     # WowheadObject(name="School of Tastyfish", ids=[], gathermate_id='120'),
+]
 
+FISHES_WRATH = [
     # Wrath of the Lich King
     WowheadObject(name="Borean Man O' War School", ids=['192051'], gathermate_id='121'),
     WowheadObject(name="Deep Sea Monsterbelly School", ids=['192053'], gathermate_id='122'),
@@ -806,7 +850,9 @@ FISHES = [
     WowheadObject(name="Musselback Sculpin School", ids=['192046'], gathermate_id='130'),
     WowheadObject(name="Nettlefish School", ids=['192057'], gathermate_id='131'),
     # WowheadObject(name="Strange Pool", ids=[], gathermate_id='132'),
+]
 
+FISHES_CATA = [
     # Cataclysm
     WowheadObject(name="Schooner Wreckage", ids=['180662'], gathermate_id='133'),
     # WowheadObject(name="Waterlogged Wreckage Pool", ids=[], gathermate_id='134'),
@@ -822,7 +868,9 @@ FISHES = [
     WowheadObject(name="Pool of Fire", ids=['207734'], gathermate_id='155'),
     # WowheadObject(name="Shipwreck Debris", ids=[], gathermate_id='156'),
     WowheadObject(name="Deepsea Sagefish School", ids=['208311'], gathermate_id='157'),
+]
 
+FISHES_MOP = [
     # Mists of Pandaria
     WowheadObject(name="Emperor Salmon School", ids=['212163'], gathermate_id='158'),
     WowheadObject(name="Giant Mantis Shrimp Swarm", ids=['212169'], gathermate_id='159'),
@@ -835,7 +883,9 @@ FISHES = [
     WowheadObject(name="Jewel Danio School", ids=['221548'], gathermate_id='166'),
     WowheadObject(name="Spinefish School", ids=['212177'], gathermate_id='167'),
     WowheadObject(name="Tiger Gourami School", ids=['212175'], gathermate_id='168'),
+]
 
+FISHES_WOD = [
     # Draenor
     WowheadObject(name="Abyssal Gulper School", ids=['229072'], gathermate_id='169'),
     # WowheadObject(name="Oily Abyssal Gulper School", ids=[], gathermate_id='170'),
@@ -850,9 +900,10 @@ FISHES = [
     # WowheadObject(name="Lagoon Pool", ids=[], gathermate_id='179'),
     # WowheadObject(name="Sparkling Pool", ids=[], gathermate_id='180'),
     WowheadObject(name="Felmouth Frenzy School", ids=['243325'], gathermate_id='181'),
-
+]
     # WoWHead stops providing fishing pool locations after this point. Bug?
 
+FISHES_LEGION = [
     # Legion
     WowheadObject(name="Black Barracuda School", ids=['246493'], gathermate_id='182'),
     WowheadObject(name="Cursed Queenfish School", ids=['246488'], gathermate_id='183'),
@@ -860,7 +911,9 @@ FISHES = [
     WowheadObject(name="Fever of Stormrays", ids=['246491'], gathermate_id='185'),
     WowheadObject(name="Highmountain Salmon School", ids=['246490'], gathermate_id='186'),
     WowheadObject(name="Mossgill Perch School", ids=['246489'], gathermate_id='187'),
+]
 
+FISHES_BFA = [
     # Battle for Azeroth
     WowheadObject(name="Frenzied Fangtooth School", ids=['278405'], gathermate_id='188'),
     WowheadObject(name="Great Sea Catfish School", ids=['278399'], gathermate_id='189'),
@@ -875,7 +928,9 @@ FISHES = [
     WowheadObject(name="Viper Fish School", ids=['327161'], gathermate_id='198'),
     WowheadObject(name="Ionized Minnows", ids=['323370'], gathermate_id='199'),
     WowheadObject(name="Sentry Fish School", ids=['326054'], gathermate_id='1101'),
+]
 
+FISHES_SL = [
     # Shadowlands
     WowheadObject(name="Iridescent Amberjack School", ids=['349083'], gathermate_id='1102'),
     WowheadObject(name="Pocked Bonefish School", ids=['349086'], gathermate_id='1103'),
@@ -883,7 +938,9 @@ FISHES = [
     WowheadObject(name="Elysian Thade School", ids=['349088'], gathermate_id='1105'),
     WowheadObject(name="Lost Sole School", ids=['349082'], gathermate_id='1106'),
     WowheadObject(name="Spinefin Piranha School", ids=['349087'], gathermate_id='1107'),
+]
 
+FISHES_DF = [
     # Dragonflight
     WowheadObject(name="Islefin Dorado Pool", ids=['381101'], gathermate_id='1109'),
     WowheadObject(name="Shimmering Treasure Pool", ids=['382090'], gathermate_id='1110'),
@@ -894,7 +951,9 @@ FISHES = [
     WowheadObject(name="Rimefin Tuna Pool", ids=['378271'], gathermate_id='1115'),
     WowheadObject(name="Magma Thresher Pool", ids=['377957'], gathermate_id='1116'),
     WowheadObject(name="Prismatic Leaper School", ids=['377938'], gathermate_id='1117'),
+]
 
+FISHES_TWW = [
     # The War Within
     WowheadObject(name="Calm Surfacing Ripple", ids=['451670'], gathermate_id='1118'),
     WowheadObject(name="River Bass Pool", ids=['451674'], gathermate_id='1119'),
@@ -914,11 +973,74 @@ FISHES = [
 ]
 
 if __name__ == '__main__':
-    with open("../DATA/Mined_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS), file=file)
-    with open("../DATA/Mined_MiningData.lua", "w") as file:
-        print(Aggregate("Mine", ORES), file=file)
+    with open("../DATA/Herb/Mined_VAN_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_VAN), file=file)
+    with open("../DATA/Herb/Mined_BC_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_BC), file=file)
+    with open("../DATA/Herb/Mined_WRATH_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_WRATH), file=file)
+    with open("../DATA/Herb/Mined_CATA_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_CATA), file=file)
+    with open("../DATA/Herb/Mined_MOP_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_MOP), file=file)
+    with open("../DATA/Herb/Mined_WOD_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_WOD), file=file)
+    with open("../DATA/Herb/Mined_LEGION_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_LEGION), file=file)
+    with open("../DATA/Herb/Mined_BFA_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_BFA), file=file)
+    with open("../DATA/Herb/Mined_SL_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_SL), file=file)
+    with open("../DATA/Herb/Mined_DF_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_DF), file=file)
+    with open("../DATA/Herb/Mined_TWW_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_TWW), file=file)
+
+    with open("../DATA/Ore/Mined_VAN_MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES_VAN), file=file)
+    with open("../DATA/Ore/Mined_BC_MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES_BC), file=file)
+    with open("../DATA/Ore/Mined_WRATH_MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES_WRATH), file=file)
+    with open("../DATA/Ore/Mined_CATA_MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES_CATA), file=file)
+    with open("../DATA/Ore/Mined_MOP_MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES_MOP), file=file)
+    with open("../DATA/Ore/Mined_WOD_MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES_WOD), file=file)
+    with open("../DATA/Ore/Mined_LEGION_MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES_LEGION), file=file)
+    with open("../DATA/Ore/Mined_BFA_MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES_BFA), file=file)
+    with open("../DATA/Ore/Mined_SL_MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES_SL), file=file)
+    with open("../DATA/Ore/Mined_DF_MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES_DF), file=file)
+    with open("../DATA/Ore/Mined_TWW_MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES_TWW), file=file)
+
 #    with open("../DATA/Mined_TreasureData.lua", "w") as file:
 #        print(Aggregate("Treasure", TREASURES), file=file)
-    with open("../DATA/Mined_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES), file=file)
+
+    with open("../DATA/Fish/Mined_VAN_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_VAN), file=file)
+    with open("../DATA/Fish/Mined_BC_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_BC), file=file)
+    with open("../DATA/Fish/Mined_WRATH_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_WRATH), file=file)
+    with open("../DATA/Fish/Mined_CATA_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_CATA), file=file)
+    with open("../DATA/Fish/Mined_MOP_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_MOP), file=file)
+    with open("../DATA/Fish/Mined_WOD_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_WOD), file=file)
+    with open("../DATA/Fish/Mined_LEGION_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_LEGION), file=file)
+    with open("../DATA/Fish/Mined_BFA_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_BFA), file=file)
+    with open("../DATA/Fish/Mined_SL_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_SL), file=file)
+    with open("../DATA/Fish/Mined_DF_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_DF), file=file)
+    with open("../DATA/Fish/Mined_TWW_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_TWW), file=file)
