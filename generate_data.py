@@ -42,7 +42,7 @@ class WowheadObject:
                 if wow_zone.name != zonemap[zone]:
                     print(f"Zone name mismatch on {zone}: {wow_zone.name} != {zonemap[zone]}")
                 coords = list()
-                try: 
+                try:
                     for coord in data_parsed[zone][0]["coords"]:
                         coords.append(Coordinate(coord[0], coord[1]))
                 except KeyError:
@@ -61,7 +61,7 @@ class WowheadObject:
 class Zone:
     name: str
     id: str
-    
+
     def __init__(self, name: str, id: str):
         self.name = name
         self.id = id
@@ -158,7 +158,7 @@ WOWHEAD_ZONE_SUPPRESSION = [
     # Cataclysm
     '6109', '5035',
     # Mists of Pandaria
-    '5918', '5956', '6052', '6109', '6214', 
+    '5918', '5956', '6052', '6109', '6214',
     # Draenor
     '6967', '7078', '7004',
     # Legion
@@ -211,7 +211,7 @@ WOWHEAD_ZONE_MAP = {
     '490': Zone("Un'Goro Crater", "78"),
     '6451': Zone("Valley of Trials", "461"),
     '618': Zone("Winterspring", "83"),
-    
+
     # Vanilla EK
     '45' : Zone("Arathi Highlands", "14"),
     '3'  : Zone("Badlands", "15"),
@@ -239,7 +239,7 @@ WOWHEAD_ZONE_MAP = {
     '28' : Zone("Western Plaguelands", "22"),
     '40' : Zone("Westfall", "52"),
     '11' : Zone("Wetlands", "56"),
-    
+
     # Burning Crusade
     '3524': Zone("Azuremyst Isle", "97"),
     '3522': Zone("Blade's Edge Mountains", "105"),
@@ -256,7 +256,7 @@ WOWHEAD_ZONE_MAP = {
     '3519': Zone("Terokkar Forest", "108"),
     '3557': Zone("The Exodar", "103"),
     '3521': Zone("Zangarmarsh", "102"),
-    
+
     # Wrath of the Lich King
     '3537': Zone("Borean Tundra", "114"),
     '2817': Zone("Crystalsong Forest", "127"),
@@ -270,7 +270,7 @@ WOWHEAD_ZONE_MAP = {
     '67'  : Zone("The Storm Peaks", "120"),
     '4197': Zone("Wintergrasp", "123"),
     '66'  : Zone("Zul'Drak", "121"),
-    
+
     # Cataclysm
     '5145': Zone("Abyssal Depths", "204"),
     '5042': Zone("Deepholm", "207"),
@@ -287,7 +287,7 @@ WOWHEAD_ZONE_MAP = {
     '4922': Zone("Twilight Highlands", "241"),
     '5034': Zone("Uldum", "249"),
     '10833': Zone("Uldum", "1527"),
-    
+
     # Mists of Pandaria
     '6138': Zone("Dread Wastes", "422"),
     '6134': Zone("Krasarang Wilds", "418"),
@@ -302,7 +302,7 @@ WOWHEAD_ZONE_MAP = {
     '5840': Zone("Vale of Eternal Blossoms", "390"),
     '5805': Zone("Valley of the Four Winds", "376"),
     '9105': Zone("Vale of Eternal Blossoms", "1530"),
-    
+
     # Draenor
     '6941': Zone("Ashran", "588"),
     '6720': Zone("Frostfire Ridge", "525"),
@@ -312,7 +312,7 @@ WOWHEAD_ZONE_MAP = {
     '6722': Zone("Spires of Arak", "542"),
     '6662': Zone("Talador", "535"),
     '6723': Zone("Tanaan Jungle", "534"),
-    
+
     # Legion
     '8899': Zone("Antoran Wastes", "885"),
     '7334': Zone("Azsuna", "630"),
@@ -325,7 +325,7 @@ WOWHEAD_ZONE_MAP = {
     '7637': Zone("Suramar", "680"),
     '7731': Zone("Thunder Totem", "750"),
     '7558': Zone("Val'sharah", "641"),
-    
+
     # Battle for Azeroth
     '8568' : Zone("Boralus", "1161"),
     '8670' : Zone("Dazar'alor", "1165"),
@@ -337,7 +337,7 @@ WOWHEAD_ZONE_MAP = {
     '8567' : Zone("Tiragarde Sound", "895"),
     '8501' : Zone("Vol'dun", "864"),
     '8499' : Zone("Zuldazar", "862"),
-    
+
     # Shadowlands
     '11510': Zone("Ardenweald", "1565"),
     '10534': Zone("Bastion", "1533"),
@@ -350,15 +350,18 @@ WOWHEAD_ZONE_MAP = {
 
     # Dragonflight
 
-	'13466': Zone("The Waking Shores", "2022"),
-	'13645': Zone("Ohn'ahran Plains", "2023"),
-	'13646': Zone("The Azure Span", "2024"),
-	'13647': Zone("Thaldraszus", "2025"),
-	'13862': Zone("Valdrakken", "2112"),
+    '13644': Zone("The Waking Shores", "2022"),
+    '13645': Zone("Ohn'ahran Plains", "2023"),
+    '13646': Zone("The Azure Span", "2024"),
+    '13647': Zone("Thaldraszus", "2025"),
+    '13862': Zone("Valdrakken", "2112"),
     '14433': Zone("The Forbidden Reach", "2151"),
     '14022': Zone("Zaralek Cavern", "2133"),
     '14529': Zone("Emerald Dream", "2200"),
     '15105': Zone("Amirdrassil", "2239"),
+    '13844': Zone("Traitor's Rest", "2262"),
+    '13802': Zone("Tyrhold Reservoir", "2199"),
+    '13992': Zone("The Primalist Future", "2085"),
 
     # The War Within
     '14717': Zone("Isle of Dorn", "2248"),
@@ -402,7 +405,7 @@ HERBS = [
     WowheadObject(name="Icecap", ids=['176588'], gathermate_id='429'),
     # WowheadObject(name="Bloodvine", ids=[], gathermate_id='430'),
     WowheadObject(name="Black Lotus", ids=['176589'], gathermate_id='431'),
-    
+
     # Burning Crusade
     WowheadObject(name="Felweed", ids=['181270'], gathermate_id='432'),
     WowheadObject(name="Dreaming Glory", ids=['181271'], gathermate_id='433'),
@@ -415,7 +418,7 @@ HERBS = [
     WowheadObject(name="Ragveil", ids=['181275'], gathermate_id='440'),
     WowheadObject(name="Flame Cap", ids=['181276'], gathermate_id='441'),
     WowheadObject(name="Netherdust Bush", ids=['185881'], gathermate_id='442'),
-    
+
     # Wrath of the Lich King
     WowheadObject(name="Adder's Tongue", ids=['191019'], gathermate_id='443'),
     # WowheadObject(name="Constrictor Grass", ids=[], gathermate_id='444'),
@@ -428,7 +431,7 @@ HERBS = [
     WowheadObject(name="Firethorn", ids=['191303'], gathermate_id='451'),
     WowheadObject(name="Frozen Herb", ids=['190173', '190175'], gathermate_id='452'),
     WowheadObject(name="Frost Lotus", ids=['190176'], gathermate_id='453'),
-    
+
     # Cataclysm
     WowheadObject(name="Dragon's Teeth", ids=['2044'], gathermate_id='454'),
     WowheadObject(name="Sorrowmoss", ids=['176587'], gathermate_id='455'),
@@ -438,7 +441,7 @@ HERBS = [
     WowheadObject(name="Heartblossom", ids=['202750'], gathermate_id='459'),
     WowheadObject(name="Twilight Jasmine", ids=['202751'], gathermate_id='460'),
     WowheadObject(name="Whiptail", ids=['202752'], gathermate_id='461'),
-    
+
     # Mists of Pandaria
     WowheadObject(name="Golden Lotus", ids=['209354', '221545'], gathermate_id='462'),
     WowheadObject(name="Fool's Cap", ids=['209355', '221547'], gathermate_id='463'),
@@ -447,7 +450,7 @@ HERBS = [
     WowheadObject(name="Green Tea Leaf", ids=['209349', '221542'], gathermate_id='466'),
     WowheadObject(name="Rain Poppy", ids=['209353', '221543'], gathermate_id='467'),
     WowheadObject(name="Sha-Touched Herb", ids=['214510'], gathermate_id='468'),
-    
+
     # Draenor
     WowheadObject(name="Talador Orchid", ids=['228576', '237400'], gathermate_id='469'),
     WowheadObject(name="Nagrand Arrowbloom", ids=['228575', '237406'], gathermate_id='470'),
@@ -456,7 +459,7 @@ HERBS = [
     WowheadObject(name="Fireweed", ids=['228572', '237396'], gathermate_id='473'),
     WowheadObject(name="Frostweed", ids=['233117', '228571', '237398'], gathermate_id='474'),
     WowheadObject(name="Withered Herb", ids=['243334'], gathermate_id='475'),
-    
+
     # Legion
     WowheadObject(name="Aethril", ids=['244774'], gathermate_id='476'),
     WowheadObject(name="Dreamleaf", ids=['244775'], gathermate_id='477'),
@@ -467,7 +470,7 @@ HERBS = [
     WowheadObject(name="Fel-Encrusted Herb", ids=['269278', '273052'], gathermate_id='482'),
     WowheadObject(name="Fel-Encrusted Herb Cluster", ids=['269887', '273053'], gathermate_id='483'),
     WowheadObject(name="Astral Glory", ids=['272782'], gathermate_id='484'),
-    
+
     # Battle for Azeroth
     WowheadObject(name="Akunda's Bite", ids=['276237'], gathermate_id='485'),
     WowheadObject(name="Anchor Weed", ids=['276242', '294125'], gathermate_id='486'),
@@ -477,7 +480,7 @@ HERBS = [
     WowheadObject(name="Star Moss", ids=['276236', '281868'], gathermate_id='490'),
     WowheadObject(name="Winter's Kiss", ids=['276238'], gathermate_id='491'),
     WowheadObject(name="Zin'anthid", ids=['326598'], gathermate_id='492'),
-    
+
     # Shadowlands
     WowheadObject(name="Death Blossom", ids=['336686', '351469', '351470', '351471'], gathermate_id='493'),
     WowheadObject(name="Nightshade", ids=['336691', '356537'], gathermate_id='494'),
@@ -494,6 +497,43 @@ HERBS = [
     WowheadObject(name="Lush Elusive Nightshade", ids=['375341'], gathermate_id='1406'),
 
     #Dragonflight
+    WowheadObject(name="Hochenblume", ids=['381209', '407703', '398757'], gathermate_id='1407'),
+    WowheadObject(name="Lush Hochenblume", ids=['381960', '407705', '398753'], gathermate_id='1408'),
+    WowheadObject(name="Frigid Hochenblume", ids=['381214'], gathermate_id='1409'),
+    WowheadObject(name="Decayed Hochenblume", ids=['381212'], gathermate_id='1410'),
+    WowheadObject(name="Windswept Hochenblume", ids=['381213'], gathermate_id='1411'),
+    WowheadObject(name="Infurious Hochenblume", ids=['381211', '409408', '398766'], gathermate_id='1412'),
+    WowheadObject(name="Titan-Touched Hochenblume", ids=['381210', '398761'], gathermate_id='1413'),
+    WowheadObject(name="Lambent Hochenblume", ids=['390139'], gathermate_id='1435'),
+
+    WowheadObject(name="Bubble Poppy", ids=['375241', '407685', '398755'], gathermate_id='1414'),
+    WowheadObject(name="Lush Bubble Poppy", ids=['381957', '407686', '398751'], gathermate_id='1415'),
+    WowheadObject(name="Frigid Bubble Poppy", ids=['375244'], gathermate_id='1416'),
+    WowheadObject(name="Decayed Bubble Poppy", ids=['375246'], gathermate_id='1417'),
+    WowheadObject(name="Windswept Bubble Poppy", ids=['375245'], gathermate_id='1418'),
+    WowheadObject(name="Infurious Bubble Poppy", ids=['375243', '398764'], gathermate_id='1419'),
+    WowheadObject(name="Titan-Touched Bubble Poppy", ids=['375242', '398759'], gathermate_id='1420'),
+    WowheadObject(name="Lambent Bubble Poppy", ids=['390142'], gathermate_id='1436'),
+
+    WowheadObject(name="Saxifrage", ids=['381207', '407701', '398758'], gathermate_id='1421'),
+    WowheadObject(name="Lush Saxifrage", ids=['407706', '398754', '381959'], gathermate_id='1422'),
+    WowheadObject(name="Frigid Saxifrage", ids=['381201'], gathermate_id='1423'),
+    WowheadObject(name="Decayed Saxifrage", ids=['381203'], gathermate_id='1424'),
+    WowheadObject(name="Windswept Saxifrage", ids=['381202'], gathermate_id='1425'),
+    WowheadObject(name="Infurious Saxifrage", ids=['381204', '398767', '409407'], gathermate_id='1426'),
+    WowheadObject(name="Titan-Touched Saxifrage", ids=['381205', '398762'], gathermate_id='1427'),
+    WowheadObject(name="Lambent Saxifrage", ids=['390140'], gathermate_id='1437'),
+
+    WowheadObject(name="Writhebark", ids=['381154', '407702', '398756'], gathermate_id='1428'),
+    WowheadObject(name="Lush Writhebark", ids=['381958', '407707', '398752'], gathermate_id='1429'),
+    WowheadObject(name="Frigid Writhebark", ids=['381200'], gathermate_id='1430'),
+    WowheadObject(name="Decayed Writhebark", ids=['381198'], gathermate_id='1431'),
+    WowheadObject(name="Windswept Writhebark", ids=['381199'], gathermate_id='1432'),
+    WowheadObject(name="Infurious Writhebark", ids=['381197', '409405', '398765'], gathermate_id='1433'),
+    WowheadObject(name="Titan-Touched Writhebark", ids=['381196', '398760'], gathermate_id='1434'),
+    WowheadObject(name="Lambent Writhebark", ids=['390141'], gathermate_id='1438'),
+
+    #WowheadObject(name="Frozen Herb", ids=['382075'], gathermate_id=''),
 
     # The War Within
     WowheadObject(name="Mycobloom", ids=['454063', '414315', '454071', '454076'], gathermate_id='1439'),
@@ -563,7 +603,7 @@ ORES = [
     WowheadObject(name="Lesser Bloodstone Deposit", ids=['2653'], gathermate_id='218'),
     WowheadObject(name="Incendicite Mineral Vein", ids=['1610'], gathermate_id='219'),
     WowheadObject(name="Indurium Mineral Vein", ids=['19903'], gathermate_id='220'),
-    
+
     # Burning Crusade
     WowheadObject(name="Fel Iron Deposit", ids=['181555'], gathermate_id='221'),
     WowheadObject(name="Adamantite Deposit", ids=['181556'], gathermate_id='222'),
@@ -572,14 +612,14 @@ ORES = [
     # WowheadObject(name="Large Obsidian Chunk", ids=[], gathermate_id='225'),
     # WowheadObject(name="Small Obsidian Chunk", ids=[], gathermate_id='226'),
     WowheadObject(name="Nethercite Deposit", ids=['185877'], gathermate_id='227'),
-    
+
     # Wrath of the Lich King
     WowheadObject(name="Cobalt Deposit", ids=['189978'], gathermate_id='228'),
     WowheadObject(name="Rich Cobalt Deposit", ids=['189979'], gathermate_id='229'),
     WowheadObject(name="Titanium Vein", ids=['191133'], gathermate_id='230'),
     WowheadObject(name="Saronite Deposit", ids=['189980'], gathermate_id='231'),
     WowheadObject(name="Rich Saronite Deposit", ids=['189981'], gathermate_id='232'),
-    
+
     # Cataclysm
     WowheadObject(name="Obsidium Deposit", ids=['202736'], gathermate_id='233'),
     # WowheadObject(name="Huge Obsidian Slab", ids=[], gathermate_id='234'),
@@ -589,7 +629,7 @@ ORES = [
     WowheadObject(name="Pyrite Deposit", ids=['202737'], gathermate_id='238'),
     WowheadObject(name="Rich Obsidium Deposit", ids=['202739'], gathermate_id='239'),
     WowheadObject(name="Rich Pyrite Deposit", ids=['202740'], gathermate_id='240'),
-    
+
     # Mists of Pandaria
     WowheadObject(name="Ghost Iron Deposit", ids=['209311', '221538'], gathermate_id='241'),
     WowheadObject(name="Rich Ghost Iron Deposit", ids=['209328', '221539'], gathermate_id='242'),
@@ -599,13 +639,13 @@ ORES = [
     WowheadObject(name="Rich Kyparite Deposit", ids=['209329'], gathermate_id='246'),
     WowheadObject(name="Trillium Vein", ids=['209313', '221541'], gathermate_id='247'),
     WowheadObject(name="Rich Trillium Vein", ids=['209330', '221540'], gathermate_id='248'),
-    
+
     # Draenor
     WowheadObject(name="True Iron Deposit", ids=['228493', '243314', '237358'], gathermate_id='249'),
     WowheadObject(name="Rich True Iron Deposit", ids=['228510', '243315', '237357'], gathermate_id='250'),
     WowheadObject(name="Blackrock Deposit", ids=['228563', '243313', '237359'], gathermate_id='251'),
     WowheadObject(name="Rich Blackrock Deposit", ids=['228564', '237360', '243312'], gathermate_id='252'),
-    
+
     # Legion
     WowheadObject(name="Leystone Deposit", ids=['241726'], gathermate_id='253'),
     WowheadObject(name="Rich Leystone Deposit", ids=['245324'], gathermate_id='254'),
@@ -616,7 +656,7 @@ ORES = [
     WowheadObject(name="Empyrium Deposit", ids=['272768'], gathermate_id='259'),
     WowheadObject(name="Rich Empyrium Deposit", ids=['272778'], gathermate_id='260'),
     WowheadObject(name="Empyrium Seam", ids=['272780'], gathermate_id='261'),
-    
+
     # Battle for Azeroth
     WowheadObject(name="Monelite Deposit", ids=['276616'], gathermate_id='262'),
     WowheadObject(name="Rich Monelite Deposit", ids=['276621'], gathermate_id='263'),
@@ -629,7 +669,7 @@ ORES = [
     WowheadObject(name="Osmenite Deposit", ids=['325875'], gathermate_id='270'),
     WowheadObject(name="Rich Osmenite Deposit", ids=['325873'], gathermate_id='271'),
     WowheadObject(name="Osmenite Seam", ids=['325874'], gathermate_id='272'),
-    
+
     # Shadowlands
     WowheadObject(name="Laestrite Deposit", ids=['349898'], gathermate_id='273'),
     WowheadObject(name="Rich Laestrite Deposit", ids=['349899'], gathermate_id='274'),
@@ -653,6 +693,27 @@ ORES = [
     WowheadObject(name="Elusive Rich Elethium Deposit", ids=['375333'], gathermate_id='292'),
 
     # Dragonflight
+    WowheadObject(name="Serevite Seam", ids=['381106'], gathermate_id='1200'),
+    WowheadObject(name="Serevite Deposit", ids=['381102', '407677', '381103'], gathermate_id='1201'),
+    WowheadObject(name="Rich Serevite Deposit", ids=['381104', '407678', '381105'], gathermate_id='1202'),
+    WowheadObject(name="Primal Serevite Deposit", ids=['381518'], gathermate_id='1203'),
+    WowheadObject(name="Molten Serevite Deposit", ids=['381516'], gathermate_id='1204'),
+    WowheadObject(name="Hardened Serevite Deposit", ids=['381515'], gathermate_id='1205'),
+    WowheadObject(name="Infurious Serevite Deposit", ids=['381519'], gathermate_id='1206'),
+    WowheadObject(name="Titan-Touched Serevite Deposit", ids=['381517'], gathermate_id='1207'),
+    WowheadObject(name="Metamorphic Serevite Deposit", ids=['390137'], gathermate_id='1216'),
+
+    WowheadObject(name="Draconium Seam", ids=['379272'], gathermate_id='1208'),
+    WowheadObject(name="Draconium Deposit", ids=['379252', '407679', '379248'], gathermate_id='1209'),
+    WowheadObject(name="Rich Draconium Deposit", ids=['407681', '379267', '379263'], gathermate_id='1210'),
+    WowheadObject(name="Primal Draconium Deposit", ids=['375239'], gathermate_id='1211'),
+    WowheadObject(name="Molten Draconium Deposit", ids=['375235'], gathermate_id='1212'),
+    WowheadObject(name="Hardened Draconium Deposit", ids=['375234'], gathermate_id='1213'),
+    WowheadObject(name="Infurious Draconium Deposit", ids=['375240'], gathermate_id='1214'),
+    WowheadObject(name="Titan-Touched Draconium Deposit", ids=['375238'], gathermate_id='1215'),
+    WowheadObject(name="Metamorphic Draconium Deposit", ids=['390138'], gathermate_id='1217'),
+
+    #WowheadObject(name="Metamorphic Spire", ids=['398747'], gathermate_id=''),
 
     # The War Within
     WowheadObject(name="Bismuth", ids=['413046'], gathermate_id='1218'),
@@ -720,7 +781,7 @@ FISHES = [
     WowheadObject(name="School of Deviate Fish", ids=['180658'], gathermate_id='109'),
     WowheadObject(name="Stonescale Eel Swarm", ids=['180712'], gathermate_id='110'),
     # WowheadObject(name="Muddy Churning Water", ids=[], gathermate_id='111'),
-    
+
     # Burning Crusade
     WowheadObject(name="Highland Mixed School", ids=['182957'], gathermate_id='112'),
     WowheadObject(name="Pure Water", ids=['182951'], gathermate_id='113'),
@@ -731,7 +792,7 @@ FISHES = [
     WowheadObject(name="Sporefish School", ids=['182953'], gathermate_id='118'),
     WowheadObject(name="Steam Pump Flotsam", ids=['182952'], gathermate_id='119'),
     # WowheadObject(name="School of Tastyfish", ids=[], gathermate_id='120'),
-    
+
     # Wrath of the Lich King
     WowheadObject(name="Borean Man O' War School", ids=['192051'], gathermate_id='121'),
     WowheadObject(name="Deep Sea Monsterbelly School", ids=['192053'], gathermate_id='122'),
@@ -745,7 +806,7 @@ FISHES = [
     WowheadObject(name="Musselback Sculpin School", ids=['192046'], gathermate_id='130'),
     WowheadObject(name="Nettlefish School", ids=['192057'], gathermate_id='131'),
     # WowheadObject(name="Strange Pool", ids=[], gathermate_id='132'),
-    
+
     # Cataclysm
     WowheadObject(name="Schooner Wreckage", ids=['180662'], gathermate_id='133'),
     # WowheadObject(name="Waterlogged Wreckage Pool", ids=[], gathermate_id='134'),
@@ -761,7 +822,7 @@ FISHES = [
     WowheadObject(name="Pool of Fire", ids=['207734'], gathermate_id='155'),
     # WowheadObject(name="Shipwreck Debris", ids=[], gathermate_id='156'),
     WowheadObject(name="Deepsea Sagefish School", ids=['208311'], gathermate_id='157'),
-    
+
     # Mists of Pandaria
     WowheadObject(name="Emperor Salmon School", ids=['212163'], gathermate_id='158'),
     WowheadObject(name="Giant Mantis Shrimp Swarm", ids=['212169'], gathermate_id='159'),
@@ -774,7 +835,7 @@ FISHES = [
     WowheadObject(name="Jewel Danio School", ids=['221548'], gathermate_id='166'),
     WowheadObject(name="Spinefish School", ids=['212177'], gathermate_id='167'),
     WowheadObject(name="Tiger Gourami School", ids=['212175'], gathermate_id='168'),
-    
+
     # Draenor
     WowheadObject(name="Abyssal Gulper School", ids=['229072'], gathermate_id='169'),
     # WowheadObject(name="Oily Abyssal Gulper School", ids=[], gathermate_id='170'),
@@ -789,7 +850,9 @@ FISHES = [
     # WowheadObject(name="Lagoon Pool", ids=[], gathermate_id='179'),
     # WowheadObject(name="Sparkling Pool", ids=[], gathermate_id='180'),
     WowheadObject(name="Felmouth Frenzy School", ids=['243325'], gathermate_id='181'),
-    
+
+    # WoWHead stops providing fishing pool locations after this point. Bug?
+
     # Legion
     WowheadObject(name="Black Barracuda School", ids=['246493'], gathermate_id='182'),
     WowheadObject(name="Cursed Queenfish School", ids=['246488'], gathermate_id='183'),
@@ -797,7 +860,7 @@ FISHES = [
     WowheadObject(name="Fever of Stormrays", ids=['246491'], gathermate_id='185'),
     WowheadObject(name="Highmountain Salmon School", ids=['246490'], gathermate_id='186'),
     WowheadObject(name="Mossgill Perch School", ids=['246489'], gathermate_id='187'),
-    
+
     # Battle for Azeroth
     WowheadObject(name="Frenzied Fangtooth School", ids=['278405'], gathermate_id='188'),
     WowheadObject(name="Great Sea Catfish School", ids=['278399'], gathermate_id='189'),
@@ -812,7 +875,7 @@ FISHES = [
     WowheadObject(name="Viper Fish School", ids=['327161'], gathermate_id='198'),
     WowheadObject(name="Ionized Minnows", ids=['323370'], gathermate_id='199'),
     WowheadObject(name="Sentry Fish School", ids=['326054'], gathermate_id='1101'),
-    
+
     # Shadowlands
     WowheadObject(name="Iridescent Amberjack School", ids=['349083'], gathermate_id='1102'),
     WowheadObject(name="Pocked Bonefish School", ids=['349086'], gathermate_id='1103'),
@@ -822,6 +885,15 @@ FISHES = [
     WowheadObject(name="Spinefin Piranha School", ids=['349087'], gathermate_id='1107'),
 
     # Dragonflight
+    WowheadObject(name="Islefin Dorado Pool", ids=['381101'], gathermate_id='1109'),
+    WowheadObject(name="Shimmering Treasure Pool", ids=['382090'], gathermate_id='1110'),
+    WowheadObject(name="Temporal Dragonhead Pool", ids=['381100'], gathermate_id='1111'),
+    WowheadObject(name="Thousandbite Piranha Swarm", ids=['381097'], gathermate_id='1112'),
+    WowheadObject(name="Aileron Seamoth School", ids=['381098'], gathermate_id='1113'),
+    WowheadObject(name="Cerulean Spinefish School", ids=['381099'], gathermate_id='1114'),
+    WowheadObject(name="Rimefin Tuna Pool", ids=['378271'], gathermate_id='1115'),
+    WowheadObject(name="Magma Thresher Pool", ids=['377957'], gathermate_id='1116'),
+    WowheadObject(name="Prismatic Leaper School", ids=['377938'], gathermate_id='1117'),
 
     # The War Within
     WowheadObject(name="Calm Surfacing Ripple", ids=['451670'], gathermate_id='1118'),
@@ -837,8 +909,8 @@ FISHES = [
     WowheadObject(name="Royal Ripple", ids=['451680'], gathermate_id='1128'),
     WowheadObject(name="Shore Treasure", ids=['451673'], gathermate_id='1129'),
     WowheadObject(name="Floating Deep Treasure", ids=['451676'], gathermate_id='1130'),
-    #WowheadObject(name="Shadowblind Grouper School", ids=['414622'], gathermate_id='1131'),
-    #WowheadObject(name="Whispers of the Deep", ids=['451682'], gathermate_id='1132'),
+    #WowheadObject(name="Shadowblind Grouper School", ids=['414622'], gathermate_id=''),
+    #WowheadObject(name="Whispers of the Deep", ids=['451682'], gathermate_id=''),
 ]
 
 if __name__ == '__main__':
