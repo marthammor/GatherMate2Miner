@@ -166,6 +166,8 @@ WOWHEAD_ZONE_SUPPRESSION = [
     # Battle for Azeroth
     '8956', '9562',
     # Dragonflight
+    '14030', # Vault of the Incarnates (Raid)
+    '14643', # Amirdrassil, the Dream's Hope (Raid)
 
     # The War Within
     '14999', # Earthcrawl Mines(Delve)
@@ -346,9 +348,19 @@ WOWHEAD_ZONE_MAP = {
     '13570': Zone("Korthia", "1961"),
     '13536': Zone("Zereth Mortis", "1970"),
 
-    #Dragonflight
+    # Dragonflight
 
-    #The War Within
+	'13466': Zone("The Waking Shores", "2022"),
+	'13645': Zone("Ohn'ahran Plains", "2023"),
+	'13646': Zone("The Azure Span", "2024"),
+	'13647': Zone("Thaldraszus", "2025"),
+	'13862': Zone("Valdrakken", "2112"),
+    '14433': Zone("The Forbidden Reach", "2151"),
+    '14022': Zone("Zaralek Cavern", "2133"),
+    '14529': Zone("Emerald Dream", "2200"),
+    '15105': Zone("Amirdrassil", "2239"),
+
+    # The War Within
     '14717': Zone("Isle of Dorn", "2248"),
     '14838': Zone("Hallowfall", "2215"),
     '14795': Zone("The Ringing Deeps", "2214"),
