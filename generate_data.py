@@ -973,74 +973,94 @@ FISHES_TWW = [
 ]
 
 if __name__ == '__main__':
-    with open("../DATA/Herb/Mined_VAN_HerbalismData.lua", "w") as file:
+    # Vanilla
+    with open("../DATA/1.Vanilla/Mined_HerbalismData.lua", "w") as file:
         print(Aggregate("Herb", HERBS_VAN), file=file)
-    with open("../DATA/Herb/Mined_BC_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS_BC), file=file)
-    with open("../DATA/Herb/Mined_WRATH_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS_WRATH), file=file)
-    with open("../DATA/Herb/Mined_CATA_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS_CATA), file=file)
-    with open("../DATA/Herb/Mined_MOP_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS_MOP), file=file)
-    with open("../DATA/Herb/Mined_WOD_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS_WOD), file=file)
-    with open("../DATA/Herb/Mined_LEGION_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS_LEGION), file=file)
-    with open("../DATA/Herb/Mined_BFA_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS_BFA), file=file)
-    with open("../DATA/Herb/Mined_SL_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS_SL), file=file)
-    with open("../DATA/Herb/Mined_DF_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS_DF), file=file)
-    with open("../DATA/Herb/Mined_TWW_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS_TWW), file=file)
-
-    with open("../DATA/Ore/Mined_VAN_MiningData.lua", "w") as file:
+    with open("../DATA/1.Vanilla/Mined_MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES_VAN), file=file)
-    with open("../DATA/Ore/Mined_BC_MiningData.lua", "w") as file:
+    with open("../DATA/1.Vanilla/Mined_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_VAN), file=file)
+
+    # BC
+    with open("../DATA/2.BC/Mined_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_BC), file=file)
+    with open("../DATA/2.BC/Mined_MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES_BC), file=file)
-    with open("../DATA/Ore/Mined_WRATH_MiningData.lua", "w") as file:
+    with open("../DATA/2.BC/Mined_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_BC), file=file)
+
+    # Wrath
+    with open("../DATA/3.Wrath/Mined_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_WRATH), file=file)
+    with open("../DATA/3.Wrath/Mined_MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES_WRATH), file=file)
-    with open("../DATA/Ore/Mined_CATA_MiningData.lua", "w") as file:
+    with open("../DATA/3.Wrath/Mined_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_WRATH), file=file)
+
+    # Cata
+    with open("../DATA/4.Cata/Mined_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_CATA), file=file)
+    with open("../DATA/4.Cata/Mined_MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES_CATA), file=file)
-    with open("../DATA/Ore/Mined_MOP_MiningData.lua", "w") as file:
+    with open("../DATA/4.Cata/Mined_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_CATA), file=file)
+
+    # Mists
+    with open("../DATA/5.Mop/Mined_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_MOP), file=file)
+    with open("../DATA/5.Mop/Mined_MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES_MOP), file=file)
-    with open("../DATA/Ore/Mined_WOD_MiningData.lua", "w") as file:
+    with open("../DATA/5.Mop/Mined_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_MOP), file=file)
+
+    # Draenor
+    with open("../DATA/6.Draenor/Mined_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_WOD), file=file)
+    with open("../DATA/6.Draenor/Mined_MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES_WOD), file=file)
-    with open("../DATA/Ore/Mined_LEGION_MiningData.lua", "w") as file:
+    with open("../DATA/6.Draenor/Mined_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_WOD), file=file)
+
+    # Legion
+    with open("../DATA/7.Legion/Mined_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_LEGION), file=file)
+    with open("../DATA/7.Legion/Mined_MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES_LEGION), file=file)
-    with open("../DATA/Ore/Mined_BFA_MiningData.lua", "w") as file:
+    with open("../DATA/7.Legion/Mined_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_LEGION), file=file)
+
+    # BfA
+    with open("../DATA/8.Bfa/Mined_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_BFA), file=file)
+    with open("../DATA/8.Bfa/Mined_MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES_BFA), file=file)
-    with open("../DATA/Ore/Mined_SL_MiningData.lua", "w") as file:
+    with open("../DATA/8.Bfa/Mined_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_BFA), file=file)
+
+    # SL
+    with open("../DATA/9.SL/Mined_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_SL), file=file)
+    with open("../DATA/9.SL/Mined_MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES_SL), file=file)
-    with open("../DATA/Ore/Mined_DF_MiningData.lua", "w") as file:
+    with open("../DATA/9.SL/Mined_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_SL), file=file)
+
+    # DF
+    with open("../DATA/10.DF/Mined_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_DF), file=file)
+    with open("../DATA/10.DF/Mined_MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES_DF), file=file)
-    with open("../DATA/Ore/Mined_TWW_MiningData.lua", "w") as file:
+    with open("../DATA/10.DF/Mined_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_DF), file=file)
+
+    # TWW
+    with open("../DATA/11.TWW/Mined_HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS_TWW), file=file)
+    with open("../DATA/11.TWW/Mined_MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES_TWW), file=file)
+    with open("../DATA/11.TWW/Mined_FishData.lua", "w") as file:
+        print(Aggregate("Fish", FISHES_TWW), file=file)
+
 
 #    with open("../DATA/Mined_TreasureData.lua", "w") as file:
 #        print(Aggregate("Treasure", TREASURES), file=file)
-
-    with open("../DATA/Fish/Mined_VAN_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES_VAN), file=file)
-    with open("../DATA/Fish/Mined_BC_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES_BC), file=file)
-    with open("../DATA/Fish/Mined_WRATH_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES_WRATH), file=file)
-    with open("../DATA/Fish/Mined_CATA_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES_CATA), file=file)
-    with open("../DATA/Fish/Mined_MOP_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES_MOP), file=file)
-    with open("../DATA/Fish/Mined_WOD_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES_WOD), file=file)
-    with open("../DATA/Fish/Mined_LEGION_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES_LEGION), file=file)
-    with open("../DATA/Fish/Mined_BFA_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES_BFA), file=file)
-    with open("../DATA/Fish/Mined_SL_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES_SL), file=file)
-    with open("../DATA/Fish/Mined_DF_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES_DF), file=file)
-    with open("../DATA/Fish/Mined_TWW_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES_TWW), file=file)
