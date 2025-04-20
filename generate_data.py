@@ -183,6 +183,9 @@ WOWHEAD_ZONE_SUPPRESSION = [
     '15005', # Nightfall Sanctum (Delve)
     '15004', # Skittering Breach (Delve)
     '15009', # The Underkeep (Delve)
+    '15836', # Excavation Site 9 (Delve)
+    '15990', # Sidestreet Sluice (Delve)
+    '14776', # The Proscenium
 ]
 
 WOWHEAD_ZONE_MAP = {
@@ -370,6 +373,8 @@ WOWHEAD_ZONE_MAP = {
     '14752': Zone("Azj-Kahet", "2255"),
     '14753': Zone("City of Threads", "2213"),
     '14771': Zone("Dornogal", "2339"),
+    '10416': Zone("Siren Isle", "2369"),
+    '15347': Zone("Undermine", "2346"),
 }
 
 HERBS = [
