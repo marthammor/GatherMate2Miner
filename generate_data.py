@@ -37,20 +37,38 @@ class WowheadObject:
                 wow_zone = WOWHEAD_ZONE_MAP.get(zone)
                 if wow_zone is None:
                     if zone not in WOWHEAD_ZONE_SUPPRESSION:
-                        print(f"Found unlisted zone: {zone}")
+                        print(f"Found unlisted zone: {zone} ({zonemap[zone]})")
                     continue
                 if wow_zone.name != zonemap[zone]:
                     print(f"Zone name mismatch on {zone}: {wow_zone.name} != {zonemap[zone]}")
                 coords = list()
                 try:
-                    for coord in data_parsed[zone][0]["coords"]:
-                        coords.append(Coordinate(coord[0], coord[1]))
+                    if isinstance(data_parsed[zone], dict):
+                        data_dict = data_parsed[zone]
+                    else:
+                        data_dict = dict(enumerate(data_parsed[zone]))
+                    for idx, entry in data_dict.items():
+                        for coord in entry["coords"]:
+                            coords.append(Coordinate(coord[0], coord[1]))
+
+                    uiMapId = str(entry["uiMapId"])
+                    if uiMapId and wow_zone.id != uiMapId:
+                        if int(idx) == 0:
+                            print(f"Zone mismatch: {wow_zone.id} != {entry['uiMapId']} ({entry['uiMapName']})")
+                        else:
+                            zoneindex = zone + "-" + str(idx)
+                            wow_zone = WOWHEAD_ZONE_MAP.get(zoneindex)
+                            if wow_zone is None:
+                                print(f"New floor for {zonemap[zone]}: {uiMapId} ({entry['uiMapName']})")
+                                wow_zone = Zone(entry["uiMapName"], uiMapId)
+                                WOWHEAD_ZONE_MAP[zoneindex] = wow_zone
+
+                    if self.coordinates.get(wow_zone) is None:
+                        self.coordinates[wow_zone] = coords
+                    else:
+                        self.coordinates[wow_zone] += coords
                 except KeyError:
                     continue
-                if self.coordinates.get(wow_zone) is None:
-                    self.coordinates[wow_zone] = coords
-                else:
-                    self.coordinates[wow_zone] += coords
         if self.name != title:
             print(f"Finished processing {self.name}, but name mismatched! ({title})")
         else:
@@ -183,6 +201,11 @@ WOWHEAD_ZONE_SUPPRESSION = [
     '15005', # Nightfall Sanctum (Delve)
     '15004', # Skittering Breach (Delve)
     '15009', # The Underkeep (Delve)
+    '14776', # The Proscenium
+    '15836', # Excavation Site 9 (Delve)
+    '15990', # Sidestreet Sluice (Delve)
+    '16427', # Archival Assault (Delve)
+    '15781', # Tazavesh Hub
 ]
 
 WOWHEAD_ZONE_MAP = {
@@ -368,8 +391,11 @@ WOWHEAD_ZONE_MAP = {
     '14838': Zone("Hallowfall", "2215"),
     '14795': Zone("The Ringing Deeps", "2214"),
     '14752': Zone("Azj-Kahet", "2255"),
+    # '14752': Zone("Azj-Kahet - Lower", "2256"),
     '14753': Zone("City of Threads", "2213"),
     '14771': Zone("Dornogal", "2339"),
+    '15347': Zone("Undermine", "2346"),
+    '15336': Zone("K'aresh", "2371"),
 }
 
 HERBS = [
@@ -580,6 +606,9 @@ HERBS = [
     WowheadObject(name="Crystallized Arathor's Spear", ids=['414329'], gathermate_id='1476'),
     #WowheadObject(name="Altered Arathor's Spear", ids=[''], gathermate_id='1477'), # Doesn't exist or hasn't been seen/uploaded to Wowhead yet.
     WowheadObject(name="Camouflaged Arathor's Spear", ids=['414344'], gathermate_id='1478'),
+
+    WowheadObject(name="Phantom Bloom", ids=['527488'], gathermate_id='1479'),
+    WowheadObject(name="Lush Phantom Bloom", ids=['527489'], gathermate_id='1480'),
 ]
 
 ORES = [
@@ -744,6 +773,9 @@ ORES = [
     WowheadObject(name="Ironclaw Seam", ids=['413882'], gathermate_id='1241'),
 
     WowheadObject(name="Webbed Ore Deposit", ids=['430335', '430351', '430352'], gathermate_id='1242'),
+
+    WowheadObject(name="Desolate Deposit", ids=['523491'], gathermate_id='1243'),
+    WowheadObject(name="Rich Desolate Deposit", ids=['523512'], gathermate_id='1244'),
 ]
 
 TREASURES = [
