@@ -168,7 +168,7 @@ class Aggregate:
         print(f'Aggregated {self.count_total} {type} nodes, {self.count_skipped} skipped')
 
     def __repr__(self):
-        output = f"GatherMate2{self.type}DB = {{\n"
+        output = f"GatherMateData2{self.type}DB = {{\n"
         for zone in sorted(self.zones):
             output += f'{str(zone)}'
         output += '}'
@@ -1066,9 +1066,9 @@ FISHES = [
 '''
 
 if __name__ == '__main__':
-    with open("../DATA/Mined_HerbalismData.lua", "w") as file:
+    with open("../GatherMate2_Data/HerbalismData.lua", "w") as file:
         print(Aggregate("Herb", HERBS, 15), file=file)
-    with open("../DATA/Mined_MiningData.lua", "w") as file:
+    with open("../GatherMate2_Data/MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES, 15), file=file)
 #    with open("../DATA/Mined_TreasureData.lua", "w") as file:
 #        print(Aggregate("Treasure", TREASURES), file=file)
