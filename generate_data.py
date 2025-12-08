@@ -174,6 +174,56 @@ with open('uimap.csv', newline='') as uimapcsv:
     for row in reader:
         UIMAP[row[1]] = row[0]
 
+RARE_SPAWNS = {
+    '204': ['202','203'], # silver
+    '205': ['203','206'], # gold
+    '208': ['206','214','215'], # truesilver
+    '209': ['212','213','207'], # oozed covered silver
+    '210': ['212','213','207'], # ooze covered gold
+    '211': ['212','213','207'], # oozed covered true silver
+    '217': ['206','214','215'], # dark iron
+    '224': ['222','223','221'], # khorium
+    '223': ['222'], # rich adamantite
+    '229': ['228'], # rich cobalt node
+    '232': ['231'], # rich saronite node
+    '230': ['231'], # titanium node
+    '441': ['440'], #flame cap
+    '239': ['233'], # obsidian
+    '237': ['236'], # rich elementium
+    '238': ['236'], # pyrtite
+    '240': ['236'], # rich pyrite
+    '462': ['462','463','464','465','466','467','468'], # golden lotus
+    '246': ['245'], # rich kyparite
+    '242': ['241'], # rich ghost iron
+    '247': ['242','241'], # trillium
+    '248': ['242','241'], # rich trillium
+    '478': ['476','477','479','480','481'], # felwort
+    '254': ['253'], # rich leystone deposit
+    '257': ['256'], # rich feslate deposit
+    '260': ['259'], # rich empyrium deposit
+    '553': ['552'], # ancient mana chunk
+    '554': ['552','553'], # ancient mana crystal
+    '483': ['482'], # Fel-encrusted Herb Cluster
+    '263': ['262'], # rich monelite deposit
+    '266': ['265'], # rich platinum deposit
+    '268': ['267'], # rich storm silver deposit
+    '486': ['485','487','488','491','492'], # anchor weed
+    '271': ['270'], # rich osmenite deposit
+    '564': ['563'], # large jelly deposit
+    '273': ['275','276','277','278','282','283','284','285'], # laestrite deposit
+    '274': ['273','275','276','277','278','282','283','284','285'], # rich laestrite deposit
+    '276': ['275'], # rich phaedrum deposit
+    '278': ['277'], # rich oxxein deposit
+    '280': ['273','274','275','276','277','278','282','283','284','285'], # elethium deposit
+    '283': ['282'], # rich solenium deposit
+    '285': ['284'], # rich sinvyr deposit
+    '494': ['493','495','496','497','498'], # nightshade
+    '493': ['495','496','497','498'], # death blossom shares spawn with zone-specific herbs
+
+    '1407': ['1414','1421','1428'], # Hochenblume is a common spawn of the other herbs
+    '1439': ['1447','1455','1463','1471'], # Mycobloom is a common shared spawn with other TWW herbs
+}
+
 # Dungeons and other odd maps
 WOWHEAD_ZONE_SUPPRESSION = [
     # Vanilla
