@@ -1065,11 +1065,28 @@ FISHES = [
 ]
 '''
 
+TIMBER = [
+    WowheadObject(name="Ironwood Lumber", ids=[575032, 576692, 574596, 574913, 584615, 577787, 573459, 578925, 581830, 576199, 576282, 576113, 577999, 581876, 572254, 576400, 584694, 573368, 576622, 573057, 584445, 576717, 573695, 574966, 584475, 578023, 574416, 582143, 574731, 577703, 582149, 577792, 576402, 575031, 574599, 574938, 576448], gathermate_id='704'),
+    WowheadObject(name="Olemba Lumber", ids=[572129, 571070, 572094, 571071, 572869, 571213, 572995, 571345, 572785, 572438, 572615], gathermate_id='705'),
+    WowheadObject(name="Coldwind Lumber", ids=[570347, 569722, 571034, 570942, 569408, 569785, 568528, 570896, 570233], gathermate_id='706'),
+    WowheadObject(name="Ashwood Lumber", ids=[578160, 573547, 574611, 586651], gathermate_id='707'),
+    WowheadObject(name="Bamboo Lumber", ids=[562440, 568199, 567867, 567726, 567840, 568132, 568137, 568405, 568424, 568305], gathermate_id='708'),
+    #WowheadObject(name="Shadowmoon Lumber", ids=[], gathermate_id='709'), # no entries?
+    WowheadObject(name="Fel-Touched Lumber", ids=[559409, 558389, 562159, 560358, 560826, 558361, 562439, 560822], gathermate_id='710'),
+    WowheadObject(name="Darkpine Lumber", ids=[556704, 556425, 555545, 558338, 556387, 556076, 557988], gathermate_id='711'),
+    WowheadObject(name="Arden Lumber", ids=[554661, 553616, 553646, 553804], gathermate_id='712'),
+    WowheadObject(name="Dragonpine Lumber", ids=[546955, 547487, 551833, 547258, 549325, 547740, 555364], gathermate_id='713'),
+    WowheadObject(name="Dornic Fir Lumber", ids=[543723, 546738, 546928, 546737, 544781], gathermate_id='714'),
+    #WowheadObject(name="Thalassian Lumber", ids=[618517, 618519, 618518, 618520], gathermate_id='715'), # Midnight
+]
+
 if __name__ == '__main__':
     with open("../GatherMate2_Data/HerbalismData.lua", "w") as file:
         print(Aggregate("Herb", HERBS, 15), file=file)
     with open("../GatherMate2_Data/MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES, 15), file=file)
+    with open("../GatherMate2_Data/TimberData.lua", "w") as file:
+        print(Aggregate("Logging", TIMBER, 15), file=file)
 #    with open("../DATA/Mined_TreasureData.lua", "w") as file:
 #        print(Aggregate("Treasure", TREASURES), file=file)
 #    with open("../DATA/Mined_FishData.lua", "w") as file:
