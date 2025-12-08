@@ -92,8 +92,8 @@ class Zone:
     def __init__(self, name: str, id: str):
         self.name = name
         self.id = id
-        if UIMAP[id] != name:
-            print(f"UIMap ID <> Name mismatch for {id} ({name} <> {UIMAP[id]})")
+        if UIMAP[id]['name'] != name:
+            print(f"UIMap ID <> Name mismatch for {id} ({name} <> {UIMAP[id]['name']})")
 
 
 @dataclass
@@ -114,6 +114,7 @@ class Coordinate:
 @dataclass
 class GathererEntry:
     coordinate: Coordinate
+    zone: str
     entry_id: str
 
     def __repr__(self):
@@ -121,6 +122,13 @@ class GathererEntry:
 
     def __lt__(self, other):
         return self.coordinate.as_gatherer_coord() < other.coordinate.as_gatherer_coord()
+
+    def near(self, other, range):
+        rsq = range*range
+        x = (self.coordinate.x - other.coordinate.x) * UIMAP[self.zone]['width']
+        y = (self.coordinate.y - other.coordinate.y) * UIMAP[self.zone]['height']
+        distanceSquared = x*x + y*y
+        return distanceSquared <= range
 
 
 @dataclass
@@ -143,14 +151,21 @@ class GathererZone:
 class Aggregate:
     type: str
     zones: typing.List[GathererZone]
+    count_total: int
+    count_skipped: int
+    range: int
 
-    def __init__(self, type, objects):
+    def __init__(self, type, objects, range):
         self.type = type
         self.zones = []
+        self.count_total = 0
+        self.count_skipped = 0
+        self.range = range
         for object in objects:
             for zone in object.coordinates:
                 for coord in object.coordinates[zone]:
-                    self.add(zone, GathererEntry(coord, object.gathermate_id))
+                    self.add(zone, GathererEntry(coord, zone.id, object.gathermate_id))
+        print(f'Aggregated {self.count_total} {type} nodes, {self.count_skipped} skipped')
 
     def __repr__(self):
         output = f"GatherMate2{self.type}DB = {{\n"
@@ -160,10 +175,19 @@ class Aggregate:
         return output
 
     def add(self, zone: Zone, entry: GathererEntry):
+        self.count_total = self.count_total + 1
         for gatherer_zone in self.zones:
             if gatherer_zone.zone == zone:
+                nearby = [x for x in gatherer_zone.entries if x.near(entry, self.range)]
+                for node in nearby:
+                    if (entry.entry_id == node.entry_id) or (node.entry_id in RARE_SPAWNS and entry.entry_id in RARE_SPAWNS[node.entry_id]):
+                        gatherer_zone.entries.remove(node) # replace
+                        self.count_skipped = self.count_skipped + 1
+                    elif entry.entry_id in RARE_SPAWNS and node.entry_id in RARE_SPAWNS[entry.entry_id]:
+                        self.count_skipped = self.count_skipped + 1
+                        return # skip
                 while entry.coordinate in [x.coordinate for x in gatherer_zone.entries]:
-                  entry.coordinate.coord = entry.coordinate.as_gatherer_coord() + 1
+                    entry.coordinate.coord = entry.coordinate.as_gatherer_coord() + 1
                 gatherer_zone.entries.append(entry)
                 return
         self.zones.append(GathererZone(zone, [entry]))
@@ -171,8 +195,43 @@ class Aggregate:
 UIMAP = {}
 with open('uimap.csv', newline='') as uimapcsv:
     reader = csv.reader(uimapcsv)
+    next(reader, None)
     for row in reader:
-        UIMAP[row[1]] = row[0]
+        UIMAP[row[1]] = { 'name': row[0] }
+
+with open('uimapassignment.csv', newline='') as assigncsv:
+    reader = csv.reader(assigncsv)
+    next(reader, None)
+    for row in reader:
+        uiMapId = row[11]
+        orderIndex = int(row[12])
+        if not uiMapId in UIMAP:
+            print(f'UIMap {uiMapId} not in UIMAP')
+            continue
+        if orderIndex != 0:
+            continue
+        if 'width' in UIMAP[uiMapId]:
+            print(f'UIMap {uiMapId} has multiple assignments')
+            continue
+        uiMin0 = float(row[0])
+        uiMin1 = float(row[1])
+        uiMax0 = float(row[2])
+        uiMax1 = float(row[3])
+        region0 = float(row[4])
+        region1 = float(row[5])
+        region2 = float(row[6])
+        region3 = float(row[7])
+        region4 = float(row[8])
+        region5 = float(row[9])
+        w = region4 - region1
+        h = region3 - region0
+        wui = uiMax0 - uiMin0
+        hui = uiMax1 - uiMin1
+        w2 = w/wui
+        h2 = h/hui
+        UIMAP[uiMapId]['width'] = w2
+        UIMAP[uiMapId]['height'] = h2
+
 
 RARE_SPAWNS = {
     '204': ['202','203'], # silver
@@ -859,6 +918,7 @@ TREASURES = [
     #WowheadObject(name="Scarlet Footlocker", ids=['179498'], gathermate_id='519'),
 ]
 
+'''
 FISHES = [
     # Vanilla
     WowheadObject(name="Floating Wreckage", ids=['180751'], gathermate_id='101'),
@@ -1003,13 +1063,15 @@ FISHES = [
     #WowheadObject(name="Shadowblind Grouper School", ids=['414622'], gathermate_id=''),
     #WowheadObject(name="Whispers of the Deep", ids=['451682'], gathermate_id=''),
 ]
+'''
 
 if __name__ == '__main__':
     with open("../DATA/Mined_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS), file=file)
+        print(Aggregate("Herb", HERBS, 15), file=file)
     with open("../DATA/Mined_MiningData.lua", "w") as file:
-        print(Aggregate("Mine", ORES), file=file)
+        print(Aggregate("Mine", ORES, 15), file=file)
 #    with open("../DATA/Mined_TreasureData.lua", "w") as file:
 #        print(Aggregate("Treasure", TREASURES), file=file)
-    with open("../DATA/Mined_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES), file=file)
+#    with open("../DATA/Mined_FishData.lua", "w") as file:
+#        print(Aggregate("Fish", FISHES, 15), file=file)
+    pass
