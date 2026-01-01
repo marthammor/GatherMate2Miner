@@ -7,6 +7,14 @@ import typing
 import math
 import html
 import csv
+import time
+
+# Headers to avoid being blocked by Wowhead
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+}
 
 
 @dataclass
@@ -23,7 +31,8 @@ class WowheadObject:
         self.gathermate_id = gathermate_id
 
         for object_id in self.ids:
-            result = requests.get(f'https://www.wowhead.com/object={object_id}')
+            time.sleep(0.5)  # Rate limiting to avoid being blocked
+            result = requests.get(f'https://www.wowhead.com/object={object_id}', headers=HEADERS)
             title = html.unescape(re.search(r'<meta property="og:title" content="(.*)">', result.text).group(1))
             data = re.search(r'var g_mapperData = (.*);', result.text)
             zones = re.findall(r'myMapper.update\({\s+zone: (\d+),\s+level: \d+,\s+}\);\s+WH.setSelectedLink\(this, \'mapper\'\);\s+return false;\s+" onmousedown="return false">([^<]+)</a>', result.text, re.M)
@@ -37,20 +46,38 @@ class WowheadObject:
                 wow_zone = WOWHEAD_ZONE_MAP.get(zone)
                 if wow_zone is None:
                     if zone not in WOWHEAD_ZONE_SUPPRESSION:
-                        print(f"Found unlisted zone: {zone}")
+                        print(f"Found unlisted zone: {zone} ({zonemap[zone]})")
                     continue
                 if wow_zone.name != zonemap[zone]:
                     print(f"Zone name mismatch on {zone}: {wow_zone.name} != {zonemap[zone]}")
                 coords = list()
                 try:
-                    for coord in data_parsed[zone][0]["coords"]:
-                        coords.append(Coordinate(coord[0], coord[1]))
+                    if isinstance(data_parsed[zone], dict):
+                        data_dict = data_parsed[zone]
+                    else:
+                        data_dict = dict(enumerate(data_parsed[zone]))
+                    for idx, entry in data_dict.items():
+                        for coord in entry["coords"]:
+                            coords.append(Coordinate(coord[0], coord[1]))
+
+                    uiMapId = str(entry["uiMapId"])
+                    if uiMapId and wow_zone.id != uiMapId:
+                        if int(idx) == 0:
+                            print(f"Zone mismatch: {wow_zone.id} != {entry['uiMapId']} ({entry['uiMapName']})")
+                        else:
+                            zoneindex = zone + "-" + str(idx)
+                            wow_zone = WOWHEAD_ZONE_MAP.get(zoneindex)
+                            if wow_zone is None:
+                                print(f"New floor for {zonemap[zone]}: {uiMapId} ({entry['uiMapName']})")
+                                wow_zone = Zone(entry["uiMapName"], uiMapId)
+                                WOWHEAD_ZONE_MAP[zoneindex] = wow_zone
+
+                    if self.coordinates.get(wow_zone) is None:
+                        self.coordinates[wow_zone] = coords
+                    else:
+                        self.coordinates[wow_zone] += coords
                 except KeyError:
                     continue
-                if self.coordinates.get(wow_zone) is None:
-                    self.coordinates[wow_zone] = coords
-                else:
-                    self.coordinates[wow_zone] += coords
         if self.name != title:
             print(f"Finished processing {self.name}, but name mismatched! ({title})")
         else:
@@ -65,8 +92,8 @@ class Zone:
     def __init__(self, name: str, id: str):
         self.name = name
         self.id = id
-        if UIMAP[id] != name:
-            print(f"UIMap ID <> Name mismatch for {id} ({name} <> {UIMAP[id]})")
+        if UIMAP[id]['name'] != name:
+            print(f"UIMap ID <> Name mismatch for {id} ({name} <> {UIMAP[id]['name']})")
 
 
 @dataclass
@@ -87,6 +114,7 @@ class Coordinate:
 @dataclass
 class GathererEntry:
     coordinate: Coordinate
+    zone: str
     entry_id: str
 
     def __repr__(self):
@@ -94,6 +122,13 @@ class GathererEntry:
 
     def __lt__(self, other):
         return self.coordinate.as_gatherer_coord() < other.coordinate.as_gatherer_coord()
+
+    def near(self, other, range):
+        rsq = range*range
+        x = (self.coordinate.x - other.coordinate.x) * UIMAP[self.zone]['width']
+        y = (self.coordinate.y - other.coordinate.y) * UIMAP[self.zone]['height']
+        distanceSquared = x*x + y*y
+        return distanceSquared <= range
 
 
 @dataclass
@@ -116,27 +151,43 @@ class GathererZone:
 class Aggregate:
     type: str
     zones: typing.List[GathererZone]
+    count_total: int
+    count_skipped: int
+    range: int
 
-    def __init__(self, type, objects):
+    def __init__(self, type, objects, range):
         self.type = type
         self.zones = []
+        self.count_total = 0
+        self.count_skipped = 0
+        self.range = range
         for object in objects:
             for zone in object.coordinates:
                 for coord in object.coordinates[zone]:
-                    self.add(zone, GathererEntry(coord, object.gathermate_id))
+                    self.add(zone, GathererEntry(coord, zone.id, object.gathermate_id))
+        print(f'Aggregated {self.count_total} {type} nodes, {self.count_skipped} skipped')
 
     def __repr__(self):
-        output = f"GatherMate2{self.type}DB = {{\n"
+        output = f"GatherMateData2{self.type}DB = {{\n"
         for zone in sorted(self.zones):
             output += f'{str(zone)}'
         output += '}'
         return output
 
     def add(self, zone: Zone, entry: GathererEntry):
+        self.count_total = self.count_total + 1
         for gatherer_zone in self.zones:
             if gatherer_zone.zone == zone:
+                nearby = [x for x in gatherer_zone.entries if x.near(entry, self.range)]
+                for node in nearby:
+                    if (entry.entry_id == node.entry_id) or (node.entry_id in RARE_SPAWNS and entry.entry_id in RARE_SPAWNS[node.entry_id]):
+                        gatherer_zone.entries.remove(node) # replace
+                        self.count_skipped = self.count_skipped + 1
+                    elif entry.entry_id in RARE_SPAWNS and node.entry_id in RARE_SPAWNS[entry.entry_id]:
+                        self.count_skipped = self.count_skipped + 1
+                        return # skip
                 while entry.coordinate in [x.coordinate for x in gatherer_zone.entries]:
-                  entry.coordinate.coord = entry.coordinate.as_gatherer_coord() + 1
+                    entry.coordinate.coord = entry.coordinate.as_gatherer_coord() + 1
                 gatherer_zone.entries.append(entry)
                 return
         self.zones.append(GathererZone(zone, [entry]))
@@ -144,8 +195,93 @@ class Aggregate:
 UIMAP = {}
 with open('uimap.csv', newline='') as uimapcsv:
     reader = csv.reader(uimapcsv)
+    next(reader, None)
     for row in reader:
-        UIMAP[row[1]] = row[0]
+        UIMAP[row[1]] = { 'name': row[0] }
+
+with open('uimapassignment.csv', newline='') as assigncsv:
+    reader = csv.reader(assigncsv)
+    next(reader, None)
+    for row in reader:
+        uiMapId = row[11]
+        orderIndex = int(row[12])
+        if not uiMapId in UIMAP:
+            print(f'UIMap {uiMapId} not in UIMAP')
+            continue
+        if orderIndex != 0:
+            continue
+        if 'width' in UIMAP[uiMapId]:
+            print(f'UIMap {uiMapId} has multiple assignments')
+            continue
+        uiMin0 = float(row[0])
+        uiMin1 = float(row[1])
+        uiMax0 = float(row[2])
+        uiMax1 = float(row[3])
+        region0 = float(row[4])
+        region1 = float(row[5])
+        region2 = float(row[6])
+        region3 = float(row[7])
+        region4 = float(row[8])
+        region5 = float(row[9])
+        w = region4 - region1
+        h = region3 - region0
+        wui = uiMax0 - uiMin0
+        hui = uiMax1 - uiMin1
+        w2 = w/wui
+        h2 = h/hui
+        UIMAP[uiMapId]['width'] = w2
+        UIMAP[uiMapId]['height'] = h2
+
+
+RARE_SPAWNS = {
+    '204': ['202','203'], # silver
+    '205': ['203','206'], # gold
+    '208': ['206','214','215'], # truesilver
+    '209': ['212','213','207'], # oozed covered silver
+    '210': ['212','213','207'], # ooze covered gold
+    '211': ['212','213','207'], # oozed covered true silver
+    '217': ['206','214','215'], # dark iron
+    '224': ['222','223','221'], # khorium
+    '223': ['222'], # rich adamantite
+    '229': ['228'], # rich cobalt node
+    '232': ['231'], # rich saronite node
+    '230': ['231'], # titanium node
+    '441': ['440'], #flame cap
+    '239': ['233'], # obsidian
+    '237': ['236'], # rich elementium
+    '238': ['236'], # pyrtite
+    '240': ['236'], # rich pyrite
+    '462': ['462','463','464','465','466','467','468'], # golden lotus
+    '246': ['245'], # rich kyparite
+    '242': ['241'], # rich ghost iron
+    '247': ['242','241'], # trillium
+    '248': ['242','241'], # rich trillium
+    '478': ['476','477','479','480','481'], # felwort
+    '254': ['253'], # rich leystone deposit
+    '257': ['256'], # rich feslate deposit
+    '260': ['259'], # rich empyrium deposit
+    '553': ['552'], # ancient mana chunk
+    '554': ['552','553'], # ancient mana crystal
+    '483': ['482'], # Fel-encrusted Herb Cluster
+    '263': ['262'], # rich monelite deposit
+    '266': ['265'], # rich platinum deposit
+    '268': ['267'], # rich storm silver deposit
+    '486': ['485','487','488','491','492'], # anchor weed
+    '271': ['270'], # rich osmenite deposit
+    '564': ['563'], # large jelly deposit
+    '273': ['275','276','277','278','282','283','284','285'], # laestrite deposit
+    '274': ['273','275','276','277','278','282','283','284','285'], # rich laestrite deposit
+    '276': ['275'], # rich phaedrum deposit
+    '278': ['277'], # rich oxxein deposit
+    '280': ['273','274','275','276','277','278','282','283','284','285'], # elethium deposit
+    '283': ['282'], # rich solenium deposit
+    '285': ['284'], # rich sinvyr deposit
+    '494': ['493','495','496','497','498'], # nightshade
+    '493': ['495','496','497','498'], # death blossom shares spawn with zone-specific herbs
+
+    '1407': ['1414','1421','1428'], # Hochenblume is a common spawn of the other herbs
+    '1439': ['1447','1455','1463','1471'], # Mycobloom is a common shared spawn with other TWW herbs
+}
 
 # Dungeons and other odd maps
 WOWHEAD_ZONE_SUPPRESSION = [
@@ -183,9 +319,11 @@ WOWHEAD_ZONE_SUPPRESSION = [
     '15005', # Nightfall Sanctum (Delve)
     '15004', # Skittering Breach (Delve)
     '15009', # The Underkeep (Delve)
+    '14776', # The Proscenium
     '15836', # Excavation Site 9 (Delve)
     '15990', # Sidestreet Sluice (Delve)
-    '14776', # The Proscenium
+    '16427', # Archival Assault (Delve)
+    '15781', # Tazavesh Hub
 ]
 
 WOWHEAD_ZONE_MAP = {
@@ -371,10 +509,11 @@ WOWHEAD_ZONE_MAP = {
     '14838': Zone("Hallowfall", "2215"),
     '14795': Zone("The Ringing Deeps", "2214"),
     '14752': Zone("Azj-Kahet", "2255"),
+    # '14752': Zone("Azj-Kahet - Lower", "2256"),
     '14753': Zone("City of Threads", "2213"),
     '14771': Zone("Dornogal", "2339"),
-    '10416': Zone("Siren Isle", "2369"),
     '15347': Zone("Undermine", "2346"),
+    '15336': Zone("K'aresh", "2371"),
 }
 
 HERBS = [
@@ -489,102 +628,105 @@ HERBS = [
     # Shadowlands
     WowheadObject(name="Death Blossom", ids=['336686', '351469', '351470', '351471'], gathermate_id='493'),
     WowheadObject(name="Nightshade", ids=['336691', '356537'], gathermate_id='494'),
+    WowheadObject(name="Lush Nightshade", ids=['375071'], gathermate_id='494'),
+    WowheadObject(name="Elusive Nightshade", ids=['375338'], gathermate_id='494'),
+    WowheadObject(name="Lush Elusive Nightshade", ids=['375341'], gathermate_id='494'),
     WowheadObject(name="Marrowroot", ids=['336689'], gathermate_id='495'),
     WowheadObject(name="Vigil's Torch", ids=['336688'], gathermate_id='496'),
     WowheadObject(name="Rising Glory", ids=['336690'], gathermate_id='497'),
     WowheadObject(name="Widowbloom", ids=['336433'], gathermate_id='498'),
     WowheadObject(name="First Flower", ids=['370398'], gathermate_id='499'),
-    WowheadObject(name="Lush Nightshade", ids=['375071'], gathermate_id='1401'),
-    WowheadObject(name="Elusive Nightshade", ids=['375338'], gathermate_id='1402'),
-    WowheadObject(name="Lush First Flower", ids=['370397'], gathermate_id='1403'),
-    WowheadObject(name="Elusive First Flower", ids=['375337'], gathermate_id='1404'),
-    WowheadObject(name="Lush Elusive First Flower", ids=['375340'], gathermate_id='1405'),
-    WowheadObject(name="Lush Elusive Nightshade", ids=['375341'], gathermate_id='1406'),
+    WowheadObject(name="Lush First Flower", ids=['370397'], gathermate_id='499'),
+    WowheadObject(name="Elusive First Flower", ids=['375337'], gathermate_id='499'),
+    WowheadObject(name="Lush Elusive First Flower", ids=['375340'], gathermate_id='499'),
 
     #Dragonflight
     WowheadObject(name="Hochenblume", ids=['381209', '407703', '398757'], gathermate_id='1407'),
-    WowheadObject(name="Lush Hochenblume", ids=['381960', '407705', '398753'], gathermate_id='1408'),
-    WowheadObject(name="Frigid Hochenblume", ids=['381214'], gathermate_id='1409'),
-    WowheadObject(name="Decayed Hochenblume", ids=['381212'], gathermate_id='1410'),
-    WowheadObject(name="Windswept Hochenblume", ids=['381213'], gathermate_id='1411'),
-    WowheadObject(name="Infurious Hochenblume", ids=['381211', '409408', '398766'], gathermate_id='1412'),
-    WowheadObject(name="Titan-Touched Hochenblume", ids=['381210', '398761'], gathermate_id='1413'),
-    WowheadObject(name="Lambent Hochenblume", ids=['390139'], gathermate_id='1435'),
+    WowheadObject(name="Lush Hochenblume", ids=['381960', '407705', '398753'], gathermate_id='1407'),
+    WowheadObject(name="Frigid Hochenblume", ids=['381214'], gathermate_id='1407'),
+    WowheadObject(name="Decayed Hochenblume", ids=['381212'], gathermate_id='1407'),
+    WowheadObject(name="Windswept Hochenblume", ids=['381213'], gathermate_id='1407'),
+    WowheadObject(name="Infurious Hochenblume", ids=['381211', '409408', '398766'], gathermate_id='1407'),
+    WowheadObject(name="Titan-Touched Hochenblume", ids=['381210', '398761'], gathermate_id='1407'),
+    WowheadObject(name="Lambent Hochenblume", ids=['390139'], gathermate_id='1407'),
 
     WowheadObject(name="Bubble Poppy", ids=['375241', '407685', '398755'], gathermate_id='1414'),
-    WowheadObject(name="Lush Bubble Poppy", ids=['381957', '407686', '398751'], gathermate_id='1415'),
-    WowheadObject(name="Frigid Bubble Poppy", ids=['375244'], gathermate_id='1416'),
-    WowheadObject(name="Decayed Bubble Poppy", ids=['375246'], gathermate_id='1417'),
-    WowheadObject(name="Windswept Bubble Poppy", ids=['375245'], gathermate_id='1418'),
-    WowheadObject(name="Infurious Bubble Poppy", ids=['375243', '398764'], gathermate_id='1419'),
-    WowheadObject(name="Titan-Touched Bubble Poppy", ids=['375242', '398759'], gathermate_id='1420'),
-    WowheadObject(name="Lambent Bubble Poppy", ids=['390142'], gathermate_id='1436'),
+    WowheadObject(name="Lush Bubble Poppy", ids=['381957', '407686', '398751'], gathermate_id='1414'),
+    WowheadObject(name="Frigid Bubble Poppy", ids=['375244'], gathermate_id='1414'),
+    WowheadObject(name="Decayed Bubble Poppy", ids=['375246'], gathermate_id='1414'),
+    WowheadObject(name="Windswept Bubble Poppy", ids=['375245'], gathermate_id='1414'),
+    WowheadObject(name="Infurious Bubble Poppy", ids=['375243', '398764'], gathermate_id='1414'),
+    WowheadObject(name="Titan-Touched Bubble Poppy", ids=['375242', '398759'], gathermate_id='1414'),
+    WowheadObject(name="Lambent Bubble Poppy", ids=['390142'], gathermate_id='1414'),
 
     WowheadObject(name="Saxifrage", ids=['381207', '407701', '398758'], gathermate_id='1421'),
-    WowheadObject(name="Lush Saxifrage", ids=['407706', '398754', '381959'], gathermate_id='1422'),
-    WowheadObject(name="Frigid Saxifrage", ids=['381201'], gathermate_id='1423'),
-    WowheadObject(name="Decayed Saxifrage", ids=['381203'], gathermate_id='1424'),
-    WowheadObject(name="Windswept Saxifrage", ids=['381202'], gathermate_id='1425'),
-    WowheadObject(name="Infurious Saxifrage", ids=['381204', '398767', '409407'], gathermate_id='1426'),
-    WowheadObject(name="Titan-Touched Saxifrage", ids=['381205', '398762'], gathermate_id='1427'),
-    WowheadObject(name="Lambent Saxifrage", ids=['390140'], gathermate_id='1437'),
+    WowheadObject(name="Lush Saxifrage", ids=['407706', '398754', '381959'], gathermate_id='1421'),
+    WowheadObject(name="Frigid Saxifrage", ids=['381201'], gathermate_id='1421'),
+    WowheadObject(name="Decayed Saxifrage", ids=['381203'], gathermate_id='1421'),
+    WowheadObject(name="Windswept Saxifrage", ids=['381202'], gathermate_id='1421'),
+    WowheadObject(name="Infurious Saxifrage", ids=['381204', '398767', '409407'], gathermate_id='1421'),
+    WowheadObject(name="Titan-Touched Saxifrage", ids=['381205', '398762'], gathermate_id='1421'),
+    WowheadObject(name="Lambent Saxifrage", ids=['390140'], gathermate_id='1421'),
 
     WowheadObject(name="Writhebark", ids=['381154', '407702', '398756'], gathermate_id='1428'),
-    WowheadObject(name="Lush Writhebark", ids=['381958', '407707', '398752'], gathermate_id='1429'),
-    WowheadObject(name="Frigid Writhebark", ids=['381200'], gathermate_id='1430'),
-    WowheadObject(name="Decayed Writhebark", ids=['381198'], gathermate_id='1431'),
-    WowheadObject(name="Windswept Writhebark", ids=['381199'], gathermate_id='1432'),
-    WowheadObject(name="Infurious Writhebark", ids=['381197', '409405', '398765'], gathermate_id='1433'),
-    WowheadObject(name="Titan-Touched Writhebark", ids=['381196', '398760'], gathermate_id='1434'),
-    WowheadObject(name="Lambent Writhebark", ids=['390141'], gathermate_id='1438'),
+    WowheadObject(name="Lush Writhebark", ids=['381958', '407707', '398752'], gathermate_id='1428'),
+    WowheadObject(name="Frigid Writhebark", ids=['381200'], gathermate_id='1428'),
+    WowheadObject(name="Decayed Writhebark", ids=['381198'], gathermate_id='1428'),
+    WowheadObject(name="Windswept Writhebark", ids=['381199'], gathermate_id='1428'),
+    WowheadObject(name="Infurious Writhebark", ids=['381197', '409405', '398765'], gathermate_id='1428'),
+    WowheadObject(name="Titan-Touched Writhebark", ids=['381196', '398760'], gathermate_id='1428'),
+    WowheadObject(name="Lambent Writhebark", ids=['390141'], gathermate_id='1428'),
 
     #WowheadObject(name="Frozen Herb", ids=['382075'], gathermate_id=''),
 
     # The War Within
     WowheadObject(name="Mycobloom", ids=['454063', '414315', '454071', '454076'], gathermate_id='1439'),
-    WowheadObject(name="Lush Mycobloom", ids=['454062', '454075', '414320', '454070'], gathermate_id='1440'),
-    WowheadObject(name="Irradiated Mycobloom", ids=['414335', '454069', '454066', '454074'], gathermate_id='1441'),
-    WowheadObject(name="Sporefused Mycobloom", ids=['454072', '423367', '454064', '454067'], gathermate_id='1442'),
-    WowheadObject(name="Sporelusive Mycobloom", ids=['429647', '429642'], gathermate_id='1443'),
-    WowheadObject(name="Crystallized Mycobloom", ids=['414325'], gathermate_id='1444'),
-    WowheadObject(name="Altered Mycobloom", ids=['414330'], gathermate_id='1445'),
-    WowheadObject(name="Camouflaged Mycobloom", ids=['414340', '454073', '454065', '454068'], gathermate_id='1446'),
+    WowheadObject(name="Lush Mycobloom", ids=['454062', '454075', '414320', '454070'], gathermate_id='1439'),
+    WowheadObject(name="Irradiated Mycobloom", ids=['414335', '454069', '454066', '454074'], gathermate_id='1439'),
+    WowheadObject(name="Sporefused Mycobloom", ids=['454072', '423367', '454064', '454067'], gathermate_id='1439'),
+    WowheadObject(name="Sporelusive Mycobloom", ids=['429647', '429642'], gathermate_id='1439'),
+    WowheadObject(name="Crystallized Mycobloom", ids=['414325'], gathermate_id='1439'),
+    WowheadObject(name="Altered Mycobloom", ids=['414330'], gathermate_id='1439'),
+    WowheadObject(name="Camouflaged Mycobloom", ids=['414340', '454073', '454065', '454068'], gathermate_id='1439'),
 
     WowheadObject(name="Blessing Blossom", ids=['454086', '414318', '454081'], gathermate_id='1447'),
-    WowheadObject(name="Lush Blessing Blossom", ids=['414323', '454080', '454085'], gathermate_id='1448'),
-    WowheadObject(name="Irradiated Blessing Blossom", ids=['414338', '454079', '454084'], gathermate_id='1449'),
-    WowheadObject(name="Sporefused Blessing Blossom", ids=['454077', '454082'], gathermate_id='1450'),
-    WowheadObject(name="Sporelusive Blessing Blossom", ids=['429645', '429640'], gathermate_id='1451'),
-    WowheadObject(name="Crystallized Blessing Blossom", ids=['414328'], gathermate_id='1452'),
-    #WowheadObject(name="Altered Blessing Blossom", ids=[''], gathermate_id='1453'), # Doesn't exist or hasn't been seen/uploaded to Wowhead yet.
-    WowheadObject(name="Camouflaged Blessing Blossom", ids=['414343', '454083', '454078'], gathermate_id='1454'),
+    WowheadObject(name="Lush Blessing Blossom", ids=['414323', '454080', '454085'], gathermate_id='1447'),
+    WowheadObject(name="Irradiated Blessing Blossom", ids=['414338', '454079', '454084'], gathermate_id='1447'),
+    WowheadObject(name="Sporefused Blessing Blossom", ids=['454077', '454082'], gathermate_id='1447'),
+    WowheadObject(name="Sporelusive Blessing Blossom", ids=['429645', '429640'], gathermate_id='1447'),
+    WowheadObject(name="Crystallized Blessing Blossom", ids=['414328'], gathermate_id='1447'),
+    #WowheadObject(name="Altered Blessing Blossom", ids=[''], gathermate_id='1447'), # Doesn't exist or hasn't been seen/uploaded to Wowhead yet.
+    WowheadObject(name="Camouflaged Blessing Blossom", ids=['414343', '454083', '454078'], gathermate_id='1447'),
 
     WowheadObject(name="Luredrop", ids=['454010', '454055', '414316'], gathermate_id='1455'),
-    WowheadObject(name="Lush Luredrop", ids=['414321', '454009', '454054'], gathermate_id='1456'),
-    WowheadObject(name="Irradiated Luredrop", ids=['414336', '454053'], gathermate_id='1457'),
-    WowheadObject(name="Sporefused Luredrop", ids=['454050', '423366', '454006'], gathermate_id='1458'),
-    WowheadObject(name="Sporelusive Luredrop", ids=['429641', '429646'], gathermate_id='1459'),
-    WowheadObject(name="Crystallized Luredrop", ids=['414326'], gathermate_id='1460'),
-    WowheadObject(name="Altered Luredrop", ids=['414331'], gathermate_id='1461'),
-    WowheadObject(name="Camouflaged Luredrop", ids=['414341', '454007', '454051'], gathermate_id='1462'),
+    WowheadObject(name="Lush Luredrop", ids=['414321', '454009', '454054'], gathermate_id='1455'),
+    WowheadObject(name="Irradiated Luredrop", ids=['414336', '454053'], gathermate_id='1455'),
+    WowheadObject(name="Sporefused Luredrop", ids=['454050', '423366', '454006'], gathermate_id='1455'),
+    WowheadObject(name="Sporelusive Luredrop", ids=['429641', '429646'], gathermate_id='1455'),
+    WowheadObject(name="Crystallized Luredrop", ids=['414326'], gathermate_id='1455'),
+    WowheadObject(name="Altered Luredrop", ids=['414331'], gathermate_id='1455'),
+    WowheadObject(name="Camouflaged Luredrop", ids=['414341', '454007', '454051'], gathermate_id='1455'),
 
     WowheadObject(name="Orbinid", ids=['414317'], gathermate_id='1463'),
-    WowheadObject(name="Lush Orbinid", ids=['414322'], gathermate_id='1464'),
-    WowheadObject(name="Irradiated Orbinid", ids=['414337'], gathermate_id='1465'),
-    WowheadObject(name="Sporefused Orbinid", ids=['423368'], gathermate_id='1466'),
-    WowheadObject(name="Sporelusive Orbinid", ids=['429643', '429648'], gathermate_id='1467'),
-    WowheadObject(name="Crystallized Orbinid", ids=['414327'], gathermate_id='1468'),
-    WowheadObject(name="Altered Orbinid", ids=['414332'], gathermate_id='1469'),
-    WowheadObject(name="Camouflaged Orbinid", ids=['414342'], gathermate_id='1470'),
+    WowheadObject(name="Lush Orbinid", ids=['414322'], gathermate_id='1463'),
+    WowheadObject(name="Irradiated Orbinid", ids=['414337'], gathermate_id='1463'),
+    WowheadObject(name="Sporefused Orbinid", ids=['423368'], gathermate_id='1463'),
+    WowheadObject(name="Sporelusive Orbinid", ids=['429643', '429648'], gathermate_id='1463'),
+    WowheadObject(name="Crystallized Orbinid", ids=['414327'], gathermate_id='1463'),
+    WowheadObject(name="Altered Orbinid", ids=['414332'], gathermate_id='1463'),
+    WowheadObject(name="Camouflaged Orbinid", ids=['414342'], gathermate_id='1463'),
 
     WowheadObject(name="Arathor's Spear", ids=['414319'], gathermate_id='1471'),
-    WowheadObject(name="Lush Arathor's Spear", ids=['414324'], gathermate_id='1472'),
-    WowheadObject(name="Irradiated Arathor's Spear", ids=['414339'], gathermate_id='1473'),
-    WowheadObject(name="Sporefused Arathor's Spear", ids=['423363'], gathermate_id='1474'),
-    WowheadObject(name="Sporelusive Arathor's Spear", ids=['429639', '429644'], gathermate_id='1475'),
-    WowheadObject(name="Crystallized Arathor's Spear", ids=['414329'], gathermate_id='1476'),
-    #WowheadObject(name="Altered Arathor's Spear", ids=[''], gathermate_id='1477'), # Doesn't exist or hasn't been seen/uploaded to Wowhead yet.
-    WowheadObject(name="Camouflaged Arathor's Spear", ids=['414344'], gathermate_id='1478'),
+    WowheadObject(name="Lush Arathor's Spear", ids=['414324'], gathermate_id='1471'),
+    WowheadObject(name="Irradiated Arathor's Spear", ids=['414339'], gathermate_id='1471'),
+    WowheadObject(name="Sporefused Arathor's Spear", ids=['423363'], gathermate_id='1471'),
+    WowheadObject(name="Sporelusive Arathor's Spear", ids=['429639', '429644'], gathermate_id='1471'),
+    WowheadObject(name="Crystallized Arathor's Spear", ids=['414329'], gathermate_id='1471'),
+    #WowheadObject(name="Altered Arathor's Spear", ids=[''], gathermate_id='1471'), # Doesn't exist or hasn't been seen/uploaded to Wowhead yet.
+    WowheadObject(name="Camouflaged Arathor's Spear", ids=['414344'], gathermate_id='1471'),
+
+    WowheadObject(name="Phantom Bloom", ids=['527488'], gathermate_id='1479'),
+    WowheadObject(name="Lush Phantom Bloom", ids=['527489'], gathermate_id='1479'),
 ]
 
 ORES = [
@@ -684,71 +826,74 @@ ORES = [
     WowheadObject(name="Rich Oxxein Deposit", ids=['350085'], gathermate_id='278'),
     # WowheadObject(name="Monolithic Oxxein Deposit", ids=['356401'], gathermate_id='279'),
     WowheadObject(name="Elethium Deposit", ids=['349900'], gathermate_id='280'),
-    WowheadObject(name="Rich Elethium Deposit", ids=['350082'], gathermate_id='281'),
+    WowheadObject(name="Rich Elethium Deposit", ids=['350082'], gathermate_id='280'),
+    # WowheadObject(name="Elusive Elethium Deposit", ids=[''], gathermate_id='280'),
+    WowheadObject(name="Elusive Rich Elethium Deposit", ids=['375333'], gathermate_id='280'),
     WowheadObject(name="Solenium Deposit", ids=['349980'], gathermate_id='282'),
     WowheadObject(name="Rich Solenium Deposit", ids=['350086'], gathermate_id='283'),
     WowheadObject(name="Sinvyr Deposit", ids=['349983'], gathermate_id='284'),
     WowheadObject(name="Rich Sinvyr Deposit", ids=['350084'], gathermate_id='285'),
     # WowheadObject(name="Menacing Sinvyr Deposit", ids=['356402'], gathermate_id='286'),
     WowheadObject(name="Progenium Deposit", ids=['370400'], gathermate_id='287'),
-    WowheadObject(name="Rich Progenium Deposit", ids=['370399'], gathermate_id='288'),
-    WowheadObject(name="Elusive Progenium Deposit", ids=['375331'], gathermate_id='289'),
-    WowheadObject(name="Elusive Rich Progenium Deposit", ids=['375332'], gathermate_id='290'),
-    # WowheadObject(name="Elusive Elethium Deposit", ids=[''], gathermate_id='291'),
-    WowheadObject(name="Elusive Rich Elethium Deposit", ids=['375333'], gathermate_id='292'),
+    WowheadObject(name="Rich Progenium Deposit", ids=['370399'], gathermate_id='287'),
+    WowheadObject(name="Elusive Progenium Deposit", ids=['375331'], gathermate_id='287'),
+    WowheadObject(name="Elusive Rich Progenium Deposit", ids=['375332'], gathermate_id='287'),
 
     # Dragonflight
     WowheadObject(name="Serevite Seam", ids=['381106'], gathermate_id='1200'),
     WowheadObject(name="Serevite Deposit", ids=['381102', '407677', '381103'], gathermate_id='1201'),
-    WowheadObject(name="Rich Serevite Deposit", ids=['381104', '407678', '381105'], gathermate_id='1202'),
-    WowheadObject(name="Primal Serevite Deposit", ids=['381518'], gathermate_id='1203'),
-    WowheadObject(name="Molten Serevite Deposit", ids=['381516'], gathermate_id='1204'),
-    WowheadObject(name="Hardened Serevite Deposit", ids=['381515'], gathermate_id='1205'),
-    WowheadObject(name="Infurious Serevite Deposit", ids=['381519'], gathermate_id='1206'),
-    WowheadObject(name="Titan-Touched Serevite Deposit", ids=['381517'], gathermate_id='1207'),
-    WowheadObject(name="Metamorphic Serevite Deposit", ids=['390137'], gathermate_id='1216'),
+    WowheadObject(name="Rich Serevite Deposit", ids=['381104', '407678', '381105'], gathermate_id='1201'),
+    WowheadObject(name="Primal Serevite Deposit", ids=['381518'], gathermate_id='1201'),
+    WowheadObject(name="Molten Serevite Deposit", ids=['381516'], gathermate_id='1201'),
+    WowheadObject(name="Hardened Serevite Deposit", ids=['381515'], gathermate_id='1201'),
+    WowheadObject(name="Infurious Serevite Deposit", ids=['381519'], gathermate_id='1201'),
+    WowheadObject(name="Titan-Touched Serevite Deposit", ids=['381517'], gathermate_id='1201'),
+    WowheadObject(name="Metamorphic Serevite Deposit", ids=['390137'], gathermate_id='1201'),
 
     WowheadObject(name="Draconium Seam", ids=['379272'], gathermate_id='1208'),
     WowheadObject(name="Draconium Deposit", ids=['379252', '407679', '379248'], gathermate_id='1209'),
-    WowheadObject(name="Rich Draconium Deposit", ids=['407681', '379267', '379263'], gathermate_id='1210'),
-    WowheadObject(name="Primal Draconium Deposit", ids=['375239'], gathermate_id='1211'),
-    WowheadObject(name="Molten Draconium Deposit", ids=['375235'], gathermate_id='1212'),
-    WowheadObject(name="Hardened Draconium Deposit", ids=['375234'], gathermate_id='1213'),
-    WowheadObject(name="Infurious Draconium Deposit", ids=['375240'], gathermate_id='1214'),
-    WowheadObject(name="Titan-Touched Draconium Deposit", ids=['375238'], gathermate_id='1215'),
-    WowheadObject(name="Metamorphic Draconium Deposit", ids=['390138'], gathermate_id='1217'),
+    WowheadObject(name="Rich Draconium Deposit", ids=['407681', '379267', '379263'], gathermate_id='1209'),
+    WowheadObject(name="Primal Draconium Deposit", ids=['375239'], gathermate_id='1209'),
+    WowheadObject(name="Molten Draconium Deposit", ids=['375235'], gathermate_id='1209'),
+    WowheadObject(name="Hardened Draconium Deposit", ids=['375234'], gathermate_id='1209'),
+    WowheadObject(name="Infurious Draconium Deposit", ids=['375240'], gathermate_id='1209'),
+    WowheadObject(name="Titan-Touched Draconium Deposit", ids=['375238'], gathermate_id='1209'),
+    WowheadObject(name="Metamorphic Draconium Deposit", ids=['390138'], gathermate_id='1209'),
 
     #WowheadObject(name="Metamorphic Spire", ids=['398747'], gathermate_id=''),
 
     # The War Within
     WowheadObject(name="Bismuth", ids=['413046'], gathermate_id='1218'),
-    WowheadObject(name="Rich Bismuth", ids=['413874'], gathermate_id='1219'),
-    WowheadObject(name="Camouflaged Bismuth", ids=['413889'], gathermate_id='1220'),
-    WowheadObject(name="Crystallized Bismuth", ids=['413883'], gathermate_id='1221'),
-    WowheadObject(name="Weeping Bismuth", ids=['413884'], gathermate_id='1222'),
-    #WowheadObject(name="Webbed Bismuth", ids=[''], gathermate_id='1223'),
-    WowheadObject(name="EZ-Mine Bismuth", ids=['413886'], gathermate_id='1224'),
+    WowheadObject(name="Rich Bismuth", ids=['413874'], gathermate_id='1218'),
+    WowheadObject(name="Camouflaged Bismuth", ids=['413889'], gathermate_id='1218'),
+    WowheadObject(name="Crystallized Bismuth", ids=['413883'], gathermate_id='1218'),
+    WowheadObject(name="Weeping Bismuth", ids=['413884'], gathermate_id='1218'),
+    #WowheadObject(name="Webbed Bismuth", ids=[''], gathermate_id='1218'),
+    WowheadObject(name="EZ-Mine Bismuth", ids=['413886'], gathermate_id='1218'),
     WowheadObject(name="Bismuth Seam", ids=['413880'], gathermate_id='1225'),
 
     WowheadObject(name="Aqirite", ids=['413047'], gathermate_id='1226'),
-    WowheadObject(name="Rich Aqirite", ids=['413875'], gathermate_id='1227'),
-    WowheadObject(name="Camouflaged Aqirite", ids=['413897'], gathermate_id='1228'),
-    WowheadObject(name="Crystallized Aqirite", ids=['413890'], gathermate_id='1229'),
-    WowheadObject(name="Weeping Aqirite", ids=['413892'], gathermate_id='1230'),
-    #WowheadObject(name="Webbed Aqirite", ids=[''], gathermate_id='1231'),
-    WowheadObject(name="EZ-Mine Aqirite", ids=['413895'], gathermate_id='1232'),
+    WowheadObject(name="Rich Aqirite", ids=['413875'], gathermate_id='1226'),
+    WowheadObject(name="Camouflaged Aqirite", ids=['413897'], gathermate_id='1226'),
+    WowheadObject(name="Crystallized Aqirite", ids=['413890'], gathermate_id='1226'),
+    WowheadObject(name="Weeping Aqirite", ids=['413892'], gathermate_id='1226'),
+    #WowheadObject(name="Webbed Aqirite", ids=[''], gathermate_id='1226'),
+    WowheadObject(name="EZ-Mine Aqirite", ids=['413895'], gathermate_id='1226'),
     WowheadObject(name="Aqirite Seam", ids=['413881'], gathermate_id='1233'),
 
     WowheadObject(name="Ironclaw", ids=['413049'], gathermate_id='1234'),
-    WowheadObject(name="Rich Ironclaw", ids=['413877'], gathermate_id='1235'),
-    WowheadObject(name="Camouflaged Ironclaw", ids=['413907'], gathermate_id='1236'),
-    WowheadObject(name="Crystallized Ironclaw", ids=['413900'], gathermate_id='1237'),
-    WowheadObject(name="Weeping Ironclaw", ids=['413902'], gathermate_id='1238'),
-    #WowheadObject(name="Webbed Ironclaw", ids=[''], gathermate_id='1239'),
-    WowheadObject(name="EZ-Mine Ironclaw", ids=['413905'], gathermate_id='1240'),
+    WowheadObject(name="Rich Ironclaw", ids=['413877'], gathermate_id='1234'),
+    WowheadObject(name="Camouflaged Ironclaw", ids=['413907'], gathermate_id='1234'),
+    WowheadObject(name="Crystallized Ironclaw", ids=['413900'], gathermate_id='1234'),
+    WowheadObject(name="Weeping Ironclaw", ids=['413902'], gathermate_id='1234'),
+    #WowheadObject(name="Webbed Ironclaw", ids=[''], gathermate_id='1234'),
+    WowheadObject(name="EZ-Mine Ironclaw", ids=['413905'], gathermate_id='1234'),
     WowheadObject(name="Ironclaw Seam", ids=['413882'], gathermate_id='1241'),
 
     WowheadObject(name="Webbed Ore Deposit", ids=['430335', '430351', '430352'], gathermate_id='1242'),
+
+    WowheadObject(name="Desolate Deposit", ids=['523491'], gathermate_id='1243'),
+    WowheadObject(name="Rich Desolate Deposit", ids=['523512'], gathermate_id='1243'),
 ]
 
 TREASURES = [
@@ -773,6 +918,7 @@ TREASURES = [
     #WowheadObject(name="Scarlet Footlocker", ids=['179498'], gathermate_id='519'),
 ]
 
+'''
 FISHES = [
     # Vanilla
     WowheadObject(name="Floating Wreckage", ids=['180751'], gathermate_id='101'),
@@ -917,13 +1063,32 @@ FISHES = [
     #WowheadObject(name="Shadowblind Grouper School", ids=['414622'], gathermate_id=''),
     #WowheadObject(name="Whispers of the Deep", ids=['451682'], gathermate_id=''),
 ]
+'''
+
+TIMBER = [
+    WowheadObject(name="Ironwood Lumber", ids=[575032, 576692, 574596, 574913, 584615, 577787, 573459, 578925, 581830, 576199, 576282, 576113, 577999, 581876, 572254, 576400, 584694, 573368, 576622, 573057, 584445, 576717, 573695, 574966, 584475, 578023, 574416, 582143, 574731, 577703, 582149, 577792, 576402, 575031, 574599, 574938, 576448], gathermate_id='704'),
+    WowheadObject(name="Olemba Lumber", ids=[572129, 571070, 572094, 571071, 572869, 571213, 572995, 571345, 572785, 572438, 572615], gathermate_id='705'),
+    WowheadObject(name="Coldwind Lumber", ids=[570347, 569722, 571034, 570942, 569408, 569785, 568528, 570896, 570233], gathermate_id='706'),
+    WowheadObject(name="Ashwood Lumber", ids=[578160, 573547, 574611, 586651], gathermate_id='707'),
+    WowheadObject(name="Bamboo Lumber", ids=[562440, 568199, 567867, 567726, 567840, 568132, 568137, 568405, 568424, 568305], gathermate_id='708'),
+    #WowheadObject(name="Shadowmoon Lumber", ids=[], gathermate_id='709'), # no entries?
+    WowheadObject(name="Fel-Touched Lumber", ids=[559409, 558389, 562159, 560358, 560826, 558361, 562439, 560822], gathermate_id='710'),
+    WowheadObject(name="Darkpine Lumber", ids=[556704, 556425, 555545, 558338, 556387, 556076, 557988], gathermate_id='711'),
+    WowheadObject(name="Arden Lumber", ids=[554661, 553616, 553646, 553804], gathermate_id='712'),
+    WowheadObject(name="Dragonpine Lumber", ids=[546955, 547487, 551833, 547258, 549325, 547740, 555364], gathermate_id='713'),
+    WowheadObject(name="Dornic Fir Lumber", ids=[543723, 546738, 546928, 546737, 544781], gathermate_id='714'),
+    #WowheadObject(name="Thalassian Lumber", ids=[618517, 618519, 618518, 618520], gathermate_id='715'), # Midnight
+]
 
 if __name__ == '__main__':
-    with open("../DATA/Mined_HerbalismData.lua", "w") as file:
-        print(Aggregate("Herb", HERBS), file=file)
-    with open("../DATA/Mined_MiningData.lua", "w") as file:
-        print(Aggregate("Mine", ORES), file=file)
+    with open("../GatherMate2_Data/HerbalismData.lua", "w") as file:
+        print(Aggregate("Herb", HERBS, 15), file=file)
+    with open("../GatherMate2_Data/MiningData.lua", "w") as file:
+        print(Aggregate("Mine", ORES, 15), file=file)
+    with open("../GatherMate2_Data/TimberData.lua", "w") as file:
+        print(Aggregate("Logging", TIMBER, 15), file=file)
 #    with open("../DATA/Mined_TreasureData.lua", "w") as file:
 #        print(Aggregate("Treasure", TREASURES), file=file)
-    with open("../DATA/Mined_FishData.lua", "w") as file:
-        print(Aggregate("Fish", FISHES), file=file)
+#    with open("../DATA/Mined_FishData.lua", "w") as file:
+#        print(Aggregate("Fish", FISHES, 15), file=file)
+    pass
