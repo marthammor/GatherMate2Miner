@@ -31,7 +31,7 @@ class WowheadObject:
         self.gathermate_id = gathermate_id
 
         for object_id in self.ids:
-            time.sleep(0.5)  # Rate limiting to avoid being blocked
+            time.sleep(2)  # Rate limiting to avoid being blocked
             result = requests.get(f'https://www.wowhead.com/object={object_id}', headers=HEADERS)
             title = html.unescape(re.search(r'<meta property="og:title" content="(.*)">', result.text).group(1))
             data = re.search(r'var g_mapperData = (.*);', result.text)
@@ -292,9 +292,9 @@ WOWHEAD_ZONE_SUPPRESSION = [
     # Wrath of the Lich King
     '206', '1196', '4196', '4228', '4265', '4273', '4277', '4416', '4494', '4812', '5786',
     # Cataclysm
-    '6109', '5035',
+    '6109', '5035', '5396', '5511',
     # Mists of Pandaria
-    '5918', '5956', '6052', '6109', '6214',
+    '5918', '5956', '6052', '6109', '6214', '6862',
     # Draenor
     '6967', '7078', '7004',
     # Legion
@@ -324,6 +324,11 @@ WOWHEAD_ZONE_SUPPRESSION = [
     '15990', # Sidestreet Sluice (Delve)
     '16427', # Archival Assault (Delve)
     '15781', # Tazavesh Hub
+
+    # Midnight
+    '16545', # Collegiate Calamity (Dungeon)
+    '16548', # The Grudge Pit (Delve)
+
 ]
 
 WOWHEAD_ZONE_MAP = {
@@ -385,7 +390,7 @@ WOWHEAD_ZONE_MAP = {
     '3524': Zone("Azuremyst Isle", "97"),
     '3522': Zone("Blade's Edge Mountains", "105"),
     '3525': Zone("Bloodmyst Isle", "106"),
-    '3430': Zone("Eversong Woods", "94"),
+    '3430': Zone("Eversong Woods (Burning Crusade)", "94"),
     '3433': Zone("Ghostlands", "95"),
     '3483': Zone("Hellfire Peninsula", "100"),
     '4080': Zone("Isle of Quel'Danas", "122"),
@@ -416,11 +421,12 @@ WOWHEAD_ZONE_MAP = {
     '5145': Zone("Abyssal Depths", "204"),
     '5042': Zone("Deepholm", "207"),
     '4714': Zone("Gilneas", "217"),
-    '4755': Zone("Gilneas City", "218"),
+    '4706': Zone("Ruins of Gilneas", "217"),
+    '5351': Zone("Ruins of Gilneas City", "218"),
+    '4755': Zone("Gilneas City", "202"),
     '616' : Zone("Mount Hyjal", "198"),
     '4815': Zone("Kelp'thar Forest", "201"),
     '4737': Zone("Kezan", "194"),
-    # '4706': Zone("Ruins of Gilneas", "217"),
     '5144': Zone("Shimmering Expanse", "205"),
     '4720': Zone("The Lost Isles", "174"),
     '5095': Zone("Tol Barad", "244"),
@@ -443,6 +449,9 @@ WOWHEAD_ZONE_MAP = {
     '5840': Zone("Vale of Eternal Blossoms", "390"),
     '5805': Zone("Valley of the Four Winds", "376"),
     '9105': Zone("Vale of Eternal Blossoms", "1530"),
+    '6170': Zone("Northshire", "425"),
+    '6454': Zone("Deathknell", "465"),
+    '6176': Zone("Coldridge Valley", "427"),
 
     # Draenor
     '6941': Zone("Ashran", "588"),
@@ -453,6 +462,8 @@ WOWHEAD_ZONE_MAP = {
     '6722': Zone("Spires of Arak", "542"),
     '6662': Zone("Talador", "535"),
     '6723': Zone("Tanaan Jungle", "534"),
+    '7332': Zone("Stormshield", "622"),
+    '7333': Zone("Warspear", "624"),
 
     # Legion
     '8899': Zone("Antoran Wastes", "885"),
@@ -466,6 +477,7 @@ WOWHEAD_ZONE_MAP = {
     '7637': Zone("Suramar", "680"),
     '7731': Zone("Thunder Totem", "750"),
     '7558': Zone("Val'sharah", "641"),
+    '7846': Zone("The Dreamgrove", "747"),
 
     # Battle for Azeroth
     '8568' : Zone("Boralus", "1161"),
@@ -488,6 +500,7 @@ WOWHEAD_ZONE_MAP = {
     '11400': Zone("The Maw", "1543"),
     '13570': Zone("Korthia", "1961"),
     '13536': Zone("Zereth Mortis", "1970"),
+    '13983': Zone("Tirisfal Glades", "18"),
 
     # Dragonflight
 
@@ -514,6 +527,19 @@ WOWHEAD_ZONE_MAP = {
     '14771': Zone("Dornogal", "2339"),
     '15347': Zone("Undermine", "2346"),
     '15336': Zone("K'aresh", "2371"),
+    '16505': Zone("Voidscar Cavern", "2477"),
+    '10416': Zone("Siren Isle", "2369"),
+
+    # Midnight
+    '15968': Zone("Eversong Woods", "2395"),
+    '15355': Zone("Harandar", "2413"),
+    '16215': Zone("Isle of Quel'Danas", "2424"),
+    '15969': Zone("Silvermoon City", "2393"),
+    '15458': Zone("Voidstorm", "2405"),
+    '15958': Zone("Masters' Perch", "2444"),
+    '15947': Zone("Zul'Aman", "2437"),
+    '16194': Zone("Atal'Aman", "2536"),
+
 }
 
 HERBS = [
@@ -727,6 +753,52 @@ HERBS = [
 
     WowheadObject(name="Phantom Bloom", ids=['527488'], gathermate_id='1479'),
     WowheadObject(name="Lush Phantom Bloom", ids=['527489'], gathermate_id='1479'),
+
+    # Midnight
+    WowheadObject(name="Argentleaf", ids=['516936'], gathermate_id='1481'),
+    WowheadObject(name="Lush Argentleaf", ids=['516985'], gathermate_id='1481'),
+    WowheadObject(name="Lightfused Argentleaf", ids=['516964'], gathermate_id='1481'),
+    WowheadObject(name="Primal Argentleaf", ids=['516976'], gathermate_id='1481'),
+    WowheadObject(name="Transplanted Argentleaf", ids=['612101'], gathermate_id='1481'),
+    WowheadObject(name="Transplanted Lush Argentleaf", ids=['612111'], gathermate_id='1481'),
+    WowheadObject(name="Voidbound Argentleaf", ids=['516982'], gathermate_id='1481'),
+    WowheadObject(name="Wild Argentleaf", ids=['516971'], gathermate_id='1481'),
+
+    WowheadObject(name="Azeroot", ids=['516935'], gathermate_id='1482'),
+    WowheadObject(name="Lush Azeroot", ids=['516986'], gathermate_id='1482'),
+    WowheadObject(name="Lightfused Azeroot", ids=['516965'], gathermate_id='1482'),
+    WowheadObject(name="Primal Azeroot", ids=['516975'], gathermate_id='1482'),
+    WowheadObject(name="Transplanted Azeroot", ids=['612104'], gathermate_id='1482'),
+    WowheadObject(name="Transplanted Lush Azeroot", ids=['612114'], gathermate_id='1482'),
+    WowheadObject(name="Voidbound Azeroot", ids=['516981'], gathermate_id='1482'),
+    WowheadObject(name="Wild Azeroot", ids=['516970'], gathermate_id='1482'),
+
+    WowheadObject(name="Mana Lily", ids=['516937'], gathermate_id='1483'),
+    WowheadObject(name="Lush Mana Lily", ids=['516984'], gathermate_id='1483'),
+    WowheadObject(name="Lightfused Mana Lily", ids=['516963'], gathermate_id='1483'),
+    WowheadObject(name="Primal Mana Lily", ids=['516977'], gathermate_id='1483'),
+    WowheadObject(name="Transplanted Mana Lily", ids=['612103'], gathermate_id='1483'),
+    WowheadObject(name="Transplanted Lush Mana Lily", ids=['612113'], gathermate_id='1483'),
+    WowheadObject(name="Voidbound Mana Lily", ids=['516983'], gathermate_id='1483'),
+    WowheadObject(name="Wild Mana Lily", ids=['516972'], gathermate_id='1483'),
+
+    WowheadObject(name="Sanguithorn", ids=['516934'], gathermate_id='1484'),
+    WowheadObject(name="Lush Sanguithorn", ids=['516987'], gathermate_id='1484'),
+    WowheadObject(name="Lightfused Sanguithorn", ids=['516966'], gathermate_id='1484'),
+    WowheadObject(name="Primal Sanguithorn", ids=['516974'], gathermate_id='1484'),
+    WowheadObject(name="Transplanted Sanguithorn", ids=['612105'], gathermate_id='1484'),
+    WowheadObject(name="Transplanted Lush Sanguithorn", ids=['612115'], gathermate_id='1484'),
+    WowheadObject(name="Voidbound Sanguithorn", ids=['516980'], gathermate_id='1484'),
+    WowheadObject(name="Wild Sanguithorn", ids=['516969'], gathermate_id='1484'),
+
+    WowheadObject(name="Tranquility Bloom", ids=['516932'], gathermate_id='1485'),
+    WowheadObject(name="Lush Tranquility Bloom", ids=['516988'], gathermate_id='1485'),
+    WowheadObject(name="Lightfused Tranquility Bloom", ids=['516967'], gathermate_id='1485'),
+    WowheadObject(name="Primal Tranquility Bloom", ids=['516973'], gathermate_id='1485'),
+    WowheadObject(name="Transplanted Tranquility Bloom", ids=['612102'], gathermate_id='1485'),
+    WowheadObject(name="Transplanted Lush Tranquility Bloom", ids=['612112'], gathermate_id='1485'),
+    WowheadObject(name="Voidbound Tranquility Bloom", ids=['516979'], gathermate_id='1485'),
+    WowheadObject(name="Wild Tranquility Bloom", ids=['516968'], gathermate_id='1485'),
 ]
 
 ORES = [
@@ -894,6 +966,31 @@ ORES = [
 
     WowheadObject(name="Desolate Deposit", ids=['523491'], gathermate_id='1243'),
     WowheadObject(name="Rich Desolate Deposit", ids=['523512'], gathermate_id='1243'),
+
+    # Midnight
+    WowheadObject(name="Brilliant Silver", ids=['523295'], gathermate_id='1245'),
+    WowheadObject(name="Rich Brilliant Silver", ids=['523297'], gathermate_id='1245'),
+    WowheadObject(name="Lightfused Brilliant Silver", ids=['523303'], gathermate_id='1245'),
+    WowheadObject(name="Primal Brilliant Silver", ids=['523299'], gathermate_id='1245'),
+    WowheadObject(name="Voidbound Brilliant Silver", ids=['523301'], gathermate_id='1245'),
+    WowheadObject(name="Wild Brilliant Silver", ids=['523300'], gathermate_id='1245'),
+    WowheadObject(name="Brilliant Silver Seam", ids=['523298'], gathermate_id='1246'),
+
+    WowheadObject(name="Refulgent Copper", ids=['523281'], gathermate_id='1247'),
+    WowheadObject(name="Rich Refulgent Copper", ids=['523282'], gathermate_id='1247'),
+    WowheadObject(name="Lightfused Refulgent Copper", ids=['523284'], gathermate_id='1247'),
+    WowheadObject(name="Primal Refulgent Copper", ids=['523285'], gathermate_id='1247'),
+    WowheadObject(name="Voidbound Refulgent Copper", ids=['523287'], gathermate_id='1247'),
+    WowheadObject(name="Wild Refulgent Copper", ids=['523286'], gathermate_id='1247'),
+    WowheadObject(name="Refulgent Copper Seam", ids=['523283'], gathermate_id='1248'),
+
+    WowheadObject(name="Umbral Tin", ids=['523288'], gathermate_id='1249'),
+    WowheadObject(name="Rich Umbral Tin", ids=['523289'], gathermate_id='1249'),
+    WowheadObject(name="Lightfused Umbral Tin", ids=['523294'], gathermate_id='1249'),
+    WowheadObject(name="Primal Umbral Tin", ids=['523291'], gathermate_id='1249'),
+    WowheadObject(name="Voidbound Umbral Tin", ids=['523293'], gathermate_id='1249'),
+    WowheadObject(name="Wild Umbral Tin", ids=['523292'], gathermate_id='1249'),
+    WowheadObject(name="Umbral Tin Seam", ids=['523290'], gathermate_id='1250'),
 ]
 
 TREASURES = [
@@ -917,8 +1014,7 @@ TREASURES = [
     #WowheadObject(name="Mossy Footlocker", ids=['179493', '179497', '179495'], gathermate_id='518'),
     #WowheadObject(name="Scarlet Footlocker", ids=['179498'], gathermate_id='519'),
 ]
-
-'''
+...
 FISHES = [
     # Vanilla
     WowheadObject(name="Floating Wreckage", ids=['180751'], gathermate_id='101'),
@@ -1002,7 +1098,7 @@ FISHES = [
     # WowheadObject(name="Sparkling Pool", ids=[], gathermate_id='180'),
     WowheadObject(name="Felmouth Frenzy School", ids=['243325'], gathermate_id='181'),
 
-    # WoWHead stops providing fishing pool locations after this point. Bug?
+    # WoWHead no longer provides fishing pool locations after this point.
 
     # Legion
     WowheadObject(name="Black Barracuda School", ids=['246493'], gathermate_id='182'),
@@ -1062,33 +1158,57 @@ FISHES = [
     WowheadObject(name="Floating Deep Treasure", ids=['451676'], gathermate_id='1130'),
     #WowheadObject(name="Shadowblind Grouper School", ids=['414622'], gathermate_id=''),
     #WowheadObject(name="Whispers of the Deep", ids=['451682'], gathermate_id=''),
-]
-'''
 
+    # Midnight
+    WowheadObject(name="Bloom Swarm", ids=['540501'], gathermate_id='1131'),
+    WowheadObject(name="Blossoming Torrent", ids=['570494'], gathermate_id='1132'),
+    WowheadObject(name="Bubbling Bloom", ids=['540485'], gathermate_id='1133'),
+    WowheadObject(name="Hunter Surge", ids=['570491'], gathermate_id='1134'),
+    WowheadObject(name="Lashing Waves", ids=['570495'], gathermate_id='1135'),
+    WowheadObject(name="Obscured School", ids=['570489'], gathermate_id='1136'),
+    #WowheadObject(name="Salmon Pool", ids=['548681, 549042'], gathermate_id='1137'),
+    #WowheadObject(name="Song Swarm", ids=[''], gathermate_id='1138'),
+    #WowheadObject(name="Sunbath School", ids=['555862, 555863, 555861, 555864'], gathermate_id='1139'),
+    WowheadObject(name="Sunwell Swarm", ids=['547481'], gathermate_id='1140'),
+    WowheadObject(name="Surface Ripple", ids=['570488'], gathermate_id='1141'),
+    WowheadObject(name="Careless Cargo", ids=['558199'], gathermate_id='1142'),
+    WowheadObject(name="Lost Treasures", ids=['570492'], gathermate_id='1143'),
+    WowheadObject(name="Viscous Void", ids=['558198'], gathermate_id='1144'),
+]
+...
 TIMBER = [
     WowheadObject(name="Ironwood Lumber", ids=[575032, 576692, 574596, 574913, 584615, 577787, 573459, 578925, 581830, 576199, 576282, 576113, 577999, 581876, 572254, 576400, 584694, 573368, 576622, 573057, 584445, 576717, 573695, 574966, 584475, 578023, 574416, 582143, 574731, 577703, 582149, 577792, 576402, 575031, 574599, 574938, 576448], gathermate_id='704'),
     WowheadObject(name="Olemba Lumber", ids=[572129, 571070, 572094, 571071, 572869, 571213, 572995, 571345, 572785, 572438, 572615], gathermate_id='705'),
     WowheadObject(name="Coldwind Lumber", ids=[570347, 569722, 571034, 570942, 569408, 569785, 568528, 570896, 570233], gathermate_id='706'),
     WowheadObject(name="Ashwood Lumber", ids=[578160, 573547, 574611, 586651], gathermate_id='707'),
     WowheadObject(name="Bamboo Lumber", ids=[562440, 568199, 567867, 567726, 567840, 568132, 568137, 568405, 568424, 568305], gathermate_id='708'),
-    #WowheadObject(name="Shadowmoon Lumber", ids=[], gathermate_id='709'), # no entries?
+    WowheadObject(name="Shadowmoon Lumber", ids=[628951, 628952, 628949, 628955, 628954, 628956, 628950, 628953], gathermate_id='709'),
     WowheadObject(name="Fel-Touched Lumber", ids=[559409, 558389, 562159, 560358, 560826, 558361, 562439, 560822], gathermate_id='710'),
     WowheadObject(name="Darkpine Lumber", ids=[556704, 556425, 555545, 558338, 556387, 556076, 557988], gathermate_id='711'),
     WowheadObject(name="Arden Lumber", ids=[554661, 553616, 553646, 553804], gathermate_id='712'),
     WowheadObject(name="Dragonpine Lumber", ids=[546955, 547487, 551833, 547258, 549325, 547740, 555364], gathermate_id='713'),
     WowheadObject(name="Dornic Fir Lumber", ids=[543723, 546738, 546928, 546737, 544781], gathermate_id='714'),
-    #WowheadObject(name="Thalassian Lumber", ids=[618517, 618519, 618518, 618520], gathermate_id='715'), # Midnight
+    WowheadObject(name="Thalassian Lumber", ids=[618517, 618519, 618518, 618520], gathermate_id='715'), # Midnight
 ]
 
 if __name__ == '__main__':
+    # Herbs
     with open("../GatherMate2_Data/HerbalismData.lua", "w") as file:
         print(Aggregate("Herb", HERBS, 15), file=file)
+
+    # Ores
     with open("../GatherMate2_Data/MiningData.lua", "w") as file:
         print(Aggregate("Mine", ORES, 15), file=file)
+
+    # Fish
+#    with open("../GatherMate2_Data/FishData.lua", "w") as file:
+#        print(Aggregate("Fish", FISHES, 15), file=file)
+
+    # Timber
     with open("../GatherMate2_Data/TimberData.lua", "w") as file:
         print(Aggregate("Logging", TIMBER, 15), file=file)
-#    with open("../DATA/Mined_TreasureData.lua", "w") as file:
-#        print(Aggregate("Treasure", TREASURES), file=file)
-#    with open("../DATA/Mined_FishData.lua", "w") as file:
-#        print(Aggregate("Fish", FISHES, 15), file=file)
+
+    # Treasures
+#    with open("../GatherMate2_Data/TreasureData.lua", "w") as file:
+#        print(Aggregate("Treasure", TREASURES, 15), file=file)
     pass
